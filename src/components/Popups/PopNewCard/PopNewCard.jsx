@@ -9,14 +9,14 @@ export default function PopNewCard() {
 						<div className="pop-new-card__content">
 							<h3 className="pop-new-card__ttl">Создание задачи</h3>
 							<a href="#" className="pop-new-card__close">&#10006;</a>
-							<div className="pop-new-card__wrap">
+							<div className="pop-new-card__wrap">autofocus
 								<form className="pop-new-card__form form-new" id="formNewCard" action="#">
 									<div className="form-new__block">
-										<label for="formTitle" className="subttl">Название задачи</label>
-										<input className="form-new__input" type="text" name="name" id="formTitle" placeholder="Введите название задачи..." autofocus></input>
+										<label htmlFor="formTitle" className="subttl">Название задачи</label>
+										<input className="form-new__input" type="text" name="name" id="formTitle" placeholder="Введите название задачи..." autoFocus></input>
 									</div>
 									<div className="form-new__block">
-										<label for="textArea" className="subttl">Описание задачи</label>
+										<label htmlFor="textArea" className="subttl">Описание задачи</label>
 										<textarea className="form-new__area" name="text" id="textArea"  placeholder="Введите описание задачи..."></textarea>
 									</div>
 								</form>
