@@ -1,5 +1,6 @@
 import React from 'react';
 
+
 export default function PopExit() {
   return (
     <div className="pop-exit" id="popExit">
