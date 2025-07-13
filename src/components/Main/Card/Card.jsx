@@ -1,9 +1,11 @@
 import React from 'react';
+import CardLoader from '../../CardLoader/CardLoader';
 
 
-export default function Card({ title, theme, date }) {
+export default function Card({ title, theme, date, loading }) {
   return (
-    <div className="cards__item">
+    <div> 
+      {loading ? <CardLoader /> : <div className="cards__item">
       <div className="cards__card card">
         <div className="card__group">
           <div className={`card__theme _${theme}`}>
@@ -30,6 +32,8 @@ export default function Card({ title, theme, date }) {
           </div>
         </div>
       </div>
+    </div>}
     </div>
+    
   );
 }

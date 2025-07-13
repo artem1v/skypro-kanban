@@ -2,7 +2,7 @@ import React from 'react';
 import Card from '../Card/Card';
 
 
-export default function Column({ title }) {
+export default function Column({ title, loading }) {
   // Пример данных (потом заменим на state/props)
   const cards = [
     { id: 1, title: "Название задачи", theme: "orange", date: "30.10.23" },
@@ -16,6 +16,7 @@ export default function Column({ title }) {
       <div className="cards">
         {cards.map((card) => (
           <Card 
+            loading={loading}
             key={card.id}
             title={card.title} 
             theme={card.theme} 
