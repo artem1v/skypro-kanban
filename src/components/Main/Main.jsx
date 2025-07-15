@@ -52,14 +52,18 @@ export default function Main() {
     <main className="main">
       <div className="container">
         <div className="main__columns-container">
-          {columnStatuses.map((status) => (
-            <div key={status} className="main__column-wrapper">
-              <Column 
-                title={status}
-                cards={cards.filter(card => card.status === status)}
-              />
-            </div>
-          ))}
+          {columnStatuses.map((status) => {
+            const filteredCards = cards.filter(card => card.status === status);
+            return (
+              <div key={status} className="main__column-wrapper">
+                <Column 
+                  title={status}
+                  cards={filteredCards}
+                  isEmpty={filteredCards.length === 0}
+                />
+              </div>
+            );
+          })}
         </div>
       </div>
     </main>
