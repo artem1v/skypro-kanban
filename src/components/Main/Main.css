@@ -1,0 +1,60 @@
+.main-loading {
+  position: relative;
+  min-height: 100vh;
+}
+
+.columns-loading {
+  display: flex;
+  gap: 20px;
+  padding: 20px;
+}
+
+.column-loading {
+  flex: 1;
+  background: #f5f5f5;
+  border-radius: 10px;
+  padding: 15px;
+  min-width: 250px;
+}
+
+.column-loading__title {
+  font-size: 18px;
+  margin-bottom: 15px;
+  color: #333;
+}
+
+.cards-loading {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+
+/* Горизонтальное расположение колонок */
+.main__columns-container {
+  display: flex;
+  gap: 20px; /* Расстояние между колонками */
+ 
+  padding-bottom: 10px;
+}
+
+.main__column-wrapper {
+ 
+  flex-shrink: 0;
+}
+
+/* Стили для загрузки */
+.main__block {
+  display: flex;
+  gap: 20px;
+}
+
+.empty-column {
+  color: #94A6BE;
+  font-size: 14px;
+  text-align: center;
+  padding: 10px;
+  border: 1px dashed #EEE;
+  border-radius: 8px;
+  margin-top: 10px;
+}

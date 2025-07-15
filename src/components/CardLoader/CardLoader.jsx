@@ -1,20 +1,17 @@
-import Loader from "./Loader";
+import React from 'react';
+import './CardLoader.css';
 
-const CardLoader = () => {
+export default function CardLoader() {
   return (
     <div className="card-loader">
+      <div className="card-loader__header">
+        <div className="card-loader__theme"></div>
+        <div className="card-loader__actions"></div>
+      </div>
       <div className="card-loader__content">
-        {/* Имитация заголовка */}
-        <div className="card-loader__pretitle">
-          <Loader width={82} height={20} />
-          <Loader width={18} height={4} />
-        </div>
-        {/* Имитация текста */}
-        <Loader width={113} height={13} />
-        {/* Имитация даты */}
-        <Loader width={58} height={13} />
+        <div className="card-loader__title"></div>
+        <div className="card-loader__date"></div>
       </div>
     </div>
   );
-};
-export default CardLoader;
+}

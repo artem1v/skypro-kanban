@@ -1,0 +1,46 @@
+/* Цвета тем */
+.card__theme._orange {
+  background-color: #FFE4C2;
+  color: #FF6D00;
+}
+
+.card__theme._green {
+  background-color: #B4FDD1;
+  color: #06B16E;
+}
+
+.card__theme._purple {
+  background-color: #E9D4FF;
+  color: #9A48F1;
+}
+
+/* Остальные стили карточки */
+.cards__card {
+  background: #FFF;
+  border-radius: 10px;
+  padding: 12px;
+  margin-bottom: 15px;
+  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Стили для тем карточек */
+.card__theme._orange {
+  background-color: #FFE4C2;
+}
+.card__theme._orange p {
+  color: #FF6D00;
+}
+
+.card__theme._green {
+  background-color: #B4FDD1;
+}
+.card__theme._green p {
+  color: #06B16E;
+}
+
+.card__theme._purple {
+  background-color: #E9D4FF;
+}
+.card__theme._purple p {
+  color: #9A48F1;
+}
