@@ -1,17 +1,26 @@
-import React from 'react';
-import './CardLoader.css';
+import React from "react";
+//import "./CardLoader.css";
+import {
+  DivActions,
+  DivContent,
+  DivDate,
+  DivHeader,
+  DivLoader,
+  DivTheme,
+  DivTitle,
+} from "./CardLoader";
 
 export default function CardLoader() {
   return (
-    <div className="card-loader">
-      <div className="card-loader__header">
-        <div className="card-loader__theme"></div>
-        <div className="card-loader__actions"></div>
-      </div>
-      <div className="card-loader__content">
-        <div className="card-loader__title"></div>
-        <div className="card-loader__date"></div>
-      </div>
-    </div>
+    <DivLoader className="card-loader">
+      <DivHeader className="card-loader__header">
+        <DivTheme className="card-loader__theme"></DivTheme>
+        <DivActions className="card-loader__actions"></DivActions>
+      </DivHeader>
+      <DivContent className="card-loader__content">
+        <DivTitle className="card-loader__title"></DivTitle>
+        <DivDate className="card-loader__date"></DivDate>
+      </DivContent>
+    </DivLoader>
   );
 }

@@ -1,8 +1,15 @@
 import React, { useState } from "react";
-
-import "./Header.css";
 import PopUser from "../Popups/PopUser/PopUser";
-import { A, Auser, DivBlock, DivContainer, DivLogo, Nav, SButton, SHeader } from "./Header.styled";
+import {
+  A,
+  AUser,
+  DivBlock,
+  DivContainer,
+  DivLogo,
+  Nav,
+  SButton,
+  SHeader,
+} from "./Header.styled";
 
 export default function Header() {
   const [isUserPopupOpen, setIsUserPopupOpen] = useState(false);
@@ -11,21 +18,21 @@ export default function Header() {
     <SHeader>
       <DivContainer>
         <DivBlock>
-          <DivLogo className="_show _light">
+          <DivLogo>
             <a href="/">
               <img src="/images/logo.png" alt="Логотип" />
             </a>
           </DivLogo>
-          <Nav className="header__nav">
-            <SButton className="_hover01">
+          <Nav>
+            <SButton >
               <A href="#popNewCard">Создать новую задачу</A>
             </SButton>
-            <a
-              className="header__user _hover02"
+            <AUser
+              
               onClick={() => setIsUserPopupOpen(!isUserPopupOpen)}
             >
               Ivan Ivanov
-            </a>
+            </AUser>
             <PopUser
               isOpen={isUserPopupOpen}
               onClose={() => setIsUserPopupOpen(false)}
