@@ -1,10 +1,10 @@
 import React from 'react';
-import './Loader.css';
+import { DivOverlay, DivSpinner } from './Loader';
 
 export default function Loader() {
   return (
-    <div className="loader-overlay">
-      <div className="loader-spinner"></div>
-    </div>
+    <DivOverlay>
+      <DivSpinner></DivSpinner>
+    </DivOverlay>
   );
 }
