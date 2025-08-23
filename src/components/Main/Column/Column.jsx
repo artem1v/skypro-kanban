@@ -1,18 +1,35 @@
 import React from 'react';
 import Card from '../Card/Card';
-import './Column.css';
+import {
+  ColumnContainer,
+  ColumnTitle,
+  CardsContainer,
+  EmptyColumn
+} from './Column.styled';
 
 export default function Column({ title, cards, isEmpty }) {
+  // Правильное отображение заголовка колонки
+  const getColumnTitle = (title) => {
+    const titles = {
+      "Без статуса": "БЕЗ СТАТУСА",
+      "Нужно сделать": "НУЖНО СДЕЛАТЬ", 
+      "В работе": "В РАБОТЕ",
+      "Тестирование": "ТЕСТИРОВАНИЕ",
+      "Готово": "ГОТОВО"
+    };
+    return titles[title] || title;
+  };
+
   return (
-    <div className="column">
-      <div className="column__title">
-        <p>{title}</p>
-      </div>
-      <div className="cards">
+    <ColumnContainer>
+      <ColumnTitle>
+        <p>{getColumnTitle(title)}</p>
+      </ColumnTitle>
+      <CardsContainer>
         {isEmpty ? (
-          <div className="column__empty">
+          <EmptyColumn>
             <p>Нет задач</p>
-          </div>
+          </EmptyColumn>
         ) : (
           cards.map((card) => (
             <Card
@@ -24,8 +41,8 @@ export default function Column({ title, cards, isEmpty }) {
             />
           ))
         )}
-      </div>
-    </div>
+      </CardsContainer>
+    </ColumnContainer>
   );
 }
 

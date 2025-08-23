@@ -3,7 +3,14 @@ import Column from './Column/Column';
 import Loader from '../CardLoader/Loader';
 import CardLoader from '../CardLoader/CardLoader';
 import { cardsData } from '../../data';
-import './Main.css';
+import {
+  MainContainer,
+  MainColumnsContainer,
+  MainColumnWrapper,
+  LoadingContainer,
+  ColumnTitle
+} from './Main.styled';
+
 
 export default function Main() {
   const [isLoading, setIsLoading] = useState(true);
@@ -26,46 +33,46 @@ export default function Main() {
 
   if (isLoading) {
     return (
-      <div className="main">
+      <MainContainer>
         <div className="container">
-          <div className="main__columns-container">
+          <MainColumnsContainer>
             {columnStatuses.map((status, index) => (
-              <div key={index} className="main__column-wrapper">
-                <div className="column__title">
+              <MainColumnWrapper key={index}>
+                <ColumnTitle>
                   <p>{status}</p>
-                </div>
+                </ColumnTitle>
                 <div className="cards">
                   {[...Array(3)].map((_, i) => (
                     <CardLoader key={i} />
                   ))}
                 </div>
-              </div>
+              </MainColumnWrapper>
             ))}
-          </div>
+          </MainColumnsContainer>
         </div>
         <Loader />
-      </div>
+      </MainContainer>
     );
   }
 
   return (
-    <main className="main">
+    <MainContainer>
       <div className="container">
-        <div className="main__columns-container">
+        <MainColumnsContainer>
           {columnStatuses.map((status) => {
             const filteredCards = cards.filter(card => card.status === status);
             return (
-              <div key={status} className="main__column-wrapper">
+              <MainColumnWrapper key={status}>
                 <Column 
                   title={status}
                   cards={filteredCards}
                   isEmpty={filteredCards.length === 0}
                 />
-              </div>
+              </MainColumnWrapper>
             );
           })}
-        </div>
+        </MainColumnsContainer>
       </div>
-    </main>
+    </MainContainer>
   );
 }

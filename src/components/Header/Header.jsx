@@ -1,45 +1,43 @@
-import React, { useState } from "react";
-import PopUser from "../Popups/PopUser/PopUser";
+import React, { useState } from 'react';
+import PopUser from '../Popups/PopUser/PopUser';
 import {
-  A,
-  AUser,
-  DivBlock,
-  DivContainer,
-  DivLogo,
-  Nav,
-  SButton,
-  SHeader,
-} from "./Header.styled";
+  HeaderContainer,
+  Container,
+  HeaderBlock,
+  HeaderLogo,
+  HeaderNav,
+  HeaderButton,
+  HeaderUser
+} from './Header.styled';
 
 export default function Header() {
   const [isUserPopupOpen, setIsUserPopupOpen] = useState(false);
 
   return (
-    <SHeader>
-      <DivContainer>
-        <DivBlock>
-          <DivLogo>
+    <HeaderContainer>
+      <Container>
+        <HeaderBlock>
+          <HeaderLogo>
             <a href="/">
               <img src="/images/logo.png" alt="Логотип" />
             </a>
-          </DivLogo>
-          <Nav>
-            <SButton >
-              <A href="#popNewCard">Создать новую задачу</A>
-            </SButton>
-            <AUser
-              
+          </HeaderLogo>
+          <HeaderNav>
+            <HeaderButton>
+              <a href="#popNewCard">Создать новую задачу</a>
+            </HeaderButton>
+            <HeaderUser 
               onClick={() => setIsUserPopupOpen(!isUserPopupOpen)}
             >
               Ivan Ivanov
-            </AUser>
-            <PopUser
-              isOpen={isUserPopupOpen}
-              onClose={() => setIsUserPopupOpen(false)}
+            </HeaderUser>
+            <PopUser 
+              isOpen={isUserPopupOpen} 
+              onClose={() => setIsUserPopupOpen(false)} 
             />
-          </Nav>
-        </DivBlock>
-      </DivContainer>
-    </SHeader>
+          </HeaderNav>
+        </HeaderBlock>
+      </Container>
+    </HeaderContainer>
   );
 }
