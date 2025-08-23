@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 
 export const CardItem = styled.div`
- 
+
 `;
 
 export const CardContainer = styled.div`
@@ -69,11 +69,11 @@ export const CardTheme = styled.div`
 
 export const CardButton = styled.div`
   display: flex;
-  flex-direction: column;
   justify-content: space-between;
   height: 18px;
   cursor: pointer;
   padding: 4px;
+  gap: 4px;
   
   div {
     width: 4px;
