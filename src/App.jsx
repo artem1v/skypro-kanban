@@ -7,7 +7,6 @@ import PopBrowse from './components/Popups/PopBrowse/PopBrowse';
 import Main from './components/Main';
 import { GlobalStyles } from './GlobalStyles';
 import theme from './styles/theme';
-import "./App.css";
 
 function App() {
   const [count, setCount] = useState(0);
