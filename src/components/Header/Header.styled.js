@@ -24,8 +24,8 @@ export const HeaderBlock = styled.div`
 
 export const HeaderLogo = styled.div`
   img {
-    width: 84.13323974609375;
-    height: 17.18410873413086;
+    width: 84.13px;
+    height: 17.18px;
     opacity: 1;
     top: 27.91px;
     left: 135px;

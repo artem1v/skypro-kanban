@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import PopUser from '../Popups/PopUser/PopUser';
 import {
   HeaderContainer,
@@ -12,6 +13,12 @@ import {
 
 export default function Header() {
   const [isUserPopupOpen, setIsUserPopupOpen] = useState(false);
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    localStorage.removeItem('authToken');
+    navigate('/login');
+  };
 
   return (
     <HeaderContainer>
@@ -33,7 +40,8 @@ export default function Header() {
             </HeaderUser>
             <PopUser 
               isOpen={isUserPopupOpen} 
-              onClose={() => setIsUserPopupOpen(false)} 
+              onClose={() => setIsUserPopupOpen(false)}
+              onLogout={handleLogout}
             />
           </HeaderNav>
         </HeaderBlock>

@@ -1,26 +1,36 @@
-import { useState } from 'react';
+import React from 'react';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { ThemeProvider } from 'styled-components';
-import Header from './components/Header';
-import PopExit from './components/Popups/PopExit/PopExit';
-import PopNewCard from './components/Popups/PopNewCard/PopNewCard';
-import PopBrowse from './components/Popups/PopBrowse/PopBrowse';
-import Main from './components/Main';
 import { GlobalStyles } from './GlobalStyles';
 import theme from './styles/theme';
+import HomePage from './pages/HomePage';
+import LoginPage from './pages/LoginPage';
+import RegisterPage from './pages/RegisterPage';
+import ProtectedRoute from './components/ProtectedRoute/ProtectedRoute';
 
 function App() {
-  const [count, setCount] = useState(0);
-
   return (
     <ThemeProvider theme={theme}>
-      <div className="wrapper">
-        <GlobalStyles />
-        <PopExit />
-        <PopNewCard />
-        <PopBrowse />
-        <Header />
-        <Main />
-      </div>
+      <GlobalStyles />
+      <Router>
+        <div className="wrapper">
+          <Routes>
+            {/* Публичные маршруты */}
+            <Route path="/login" element={<LoginPage />} />
+            <Route path="/register" element={<RegisterPage />} />
+            
+            {/* Защищенные маршруты */}
+            <Route path="/" element={
+              <ProtectedRoute>
+                <HomePage />
+              </ProtectedRoute>
+            } />
+            
+            {/* Редкие случаи - перенаправление на главную */}
+            <Route path="*" element={<Navigate to="/" replace />} />
+          </Routes>
+        </div>
+      </Router>
     </ThemeProvider>
   );
 }

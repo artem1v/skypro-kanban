@@ -59,7 +59,9 @@ export const PopUserButton = styled.button`
   transition: background-color 0.2s;
 
   &:hover {
-    background: #F0F2FF;
+    background: #565EEF;
+
+    color: white;
   }
 
   a {
