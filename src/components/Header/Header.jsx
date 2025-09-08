@@ -11,13 +11,21 @@ import {
   HeaderUser
 } from './Header.styled';
 
-export default function Header() {
+export default function Header({ onNewCardOpen }) {
   const [isUserPopupOpen, setIsUserPopupOpen] = useState(false);
   const navigate = useNavigate();
 
   const handleLogout = () => {
     localStorage.removeItem('authToken');
+    localStorage.removeItem('userData');
     navigate('/login');
+  };
+
+  const handleNewCardClick = () => {
+    console.log('Кнопка "Создать задачу" нажата в Header');
+    if (onNewCardOpen) {
+      onNewCardOpen();
+    }
   };
 
   return (
@@ -30,8 +38,8 @@ export default function Header() {
             </a>
           </HeaderLogo>
           <HeaderNav>
-            <HeaderButton>
-              <a href="#popNewCard">Создать новую задачу</a>
+            <HeaderButton onClick={handleNewCardClick}>
+              Создать новую задачу
             </HeaderButton>
             <HeaderUser 
               onClick={() => setIsUserPopupOpen(!isUserPopupOpen)}

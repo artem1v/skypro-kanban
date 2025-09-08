@@ -10,36 +10,37 @@ import {
   CardDate
 } from './Card.styled';
 
-export default function Card({ title, topic, date, theme }) {
-  // Правильное отображение темы
-  const getThemeText = (topic) => {
-    switch (topic) {
-      case 'Web Design': return 'Web Design';
-      case 'Research': return 'Research';
-      case 'Copywriting': return 'Copywriting';
-      default: return topic;
+export default function Card({ title, topic, date, theme, onBrowseOpen, task }) {
+  const handleCardClick = () => {
+    console.log('Карточка нажата:', task);
+    if (onBrowseOpen && task) {
+      onBrowseOpen(task); // Передаем данные карточки
+    }
+  };
+
+  const handleButtonClick = (e) => {
+    e.stopPropagation(); // Останавливаем всплытие, чтобы не срабатывал клик по карточке
+    console.log('Кнопка нажата:', task);
+    if (onBrowseOpen && task) {
+      onBrowseOpen(task);
     }
   };
 
   return (
-    <CardItem>
+    <CardItem onClick={handleCardClick}>
       <CardContainer>
         <CardGroup>
           <CardTheme $theme={theme}>
-            <p>{getThemeText(topic)}</p>
+            <p>{topic}</p>
           </CardTheme>
-          <a href="#popBrowse">
-            <CardButton>
-              <div></div>
-              <div></div>
-              <div></div>
-            </CardButton>
-          </a>
+          <CardButton onClick={handleButtonClick}>
+            <div></div>
+            <div></div>
+            <div></div>
+          </CardButton>
         </CardGroup>
         <CardContent>
-          <a href="#" target="_blank">
-            <CardTitle>{title}</CardTitle>
-          </a>
+          <CardTitle>{title}</CardTitle>
           <CardDate>
             <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 13 13" fill="none">
               <path d="M10.5625 2.03125H2.4375C1.7644 2.03125 1.21875 2.5769 1.21875 3.25V10.5625C1.21875 11.2356 1.7644 11.7812 2.4375 11.7812H10.5625C11.2356 11.7812 11.7812 11.2356 11.7812 10.5625V3.25C11.7812 2.5769 11.2356 2.03125 10.5625 2.03125Z" stroke="#94A6BE" strokeWidth="0.8" strokeLinejoin="round"/>

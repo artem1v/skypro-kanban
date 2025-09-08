@@ -1,18 +1,17 @@
-import React, { useState, useEffect } from 'react';
-import Column from './Column/Column';
-import Loader from '../CardLoader/Loader';
-import CardLoader from '../CardLoader/CardLoader';
-import { cardsData } from '../../data';
+import React, { useState, useEffect } from "react";
+import Column from "./Column/Column";
+import Loader from "../CardLoader/Loader";
+import CardLoader from "../CardLoader/CardLoader";
+import { cardsData } from "../../data";
 import {
   MainContainer,
   MainColumnsContainer,
   MainColumnWrapper,
   LoadingContainer,
-  ColumnTitle
-} from './Main.styled';
+  ColumnTitle,
+} from "./Main.styled";
 
-
-export default function Main() {
+export default function Main({ onBrowseOpen }) {
   const [isLoading, setIsLoading] = useState(true);
   const [cards, setCards] = useState([]);
 
@@ -28,7 +27,7 @@ export default function Main() {
     "Нужно сделать",
     "В работе",
     "Тестирование",
-    "Готово"
+    "Готово",
   ];
 
   if (isLoading) {
@@ -55,24 +54,25 @@ export default function Main() {
     );
   }
 
-  return (
-    <MainContainer>
-      <div className="container">
-        <MainColumnsContainer>
-          {columnStatuses.map((status) => {
-            const filteredCards = cards.filter(card => card.status === status);
-            return (
-              <MainColumnWrapper key={status}>
-                <Column 
-                  title={status}
-                  cards={filteredCards}
-                  isEmpty={filteredCards.length === 0}
-                />
-              </MainColumnWrapper>
-            );
-          })}
-        </MainColumnsContainer>
-      </div>
-    </MainContainer>
-  );
+return (
+  <MainContainer>
+    <div className="container">
+      <MainColumnsContainer>
+        {columnStatuses.map((status) => {
+          const filteredCards = cards.filter(card => card.status === status);
+          return (
+            <MainColumnWrapper key={status}>
+              <Column 
+                title={status}
+                cards={filteredCards}
+                isEmpty={filteredCards.length === 0}
+                onBrowseOpen={onBrowseOpen}
+              />
+            </MainColumnWrapper>
+          );
+        })}
+      </MainColumnsContainer>
+    </div>
+  </MainContainer>
+);
 }

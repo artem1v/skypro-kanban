@@ -6,6 +6,10 @@ export const GlobalStyles = createGlobalStyle`
     padding: 0;
     box-sizing: border-box;
   }
+/* Затемнение фона при открытых модалках */
+  body.modal-open {
+  overflow: hidden;
+}
 
   body {
     width: 100%;

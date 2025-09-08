@@ -1,13 +1,18 @@
 import styled from 'styled-components';
 
 export const CardItem = styled.div`
-
+  margin-bottom: 20px;
+  cursor: pointer; // Добавляем курсор-указатель
+  
+  &:hover {
+    opacity: 0.8;
+  }
 `;
 
 export const CardContainer = styled.div`
   background: #FFFFFF;
   border-radius: 10px;
-  padding: 20px;
+  padding: 10px;
   box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.08);
   border: 1px solid #EAEEF6;
   transition: all 0.2s ease;

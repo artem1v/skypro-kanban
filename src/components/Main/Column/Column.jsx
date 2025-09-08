@@ -7,23 +7,11 @@ import {
   EmptyColumn
 } from './Column.styled';
 
-export default function Column({ title, cards, isEmpty }) {
-  // Правильное отображение заголовка колонки
-  const getColumnTitle = (title) => {
-    const titles = {
-      "Без статуса": "БЕЗ СТАТУСА",
-      "Нужно сделать": "НУЖНО СДЕЛАТЬ", 
-      "В работе": "В РАБОТЕ",
-      "Тестирование": "ТЕСТИРОВАНИЕ",
-      "Готово": "ГОТОВО"
-    };
-    return titles[title] || title;
-  };
-
+export default function Column({ title, cards, isEmpty, onBrowseOpen }) {
   return (
     <ColumnContainer>
       <ColumnTitle>
-        <p>{getColumnTitle(title)}</p>
+        <p>{title}</p>
       </ColumnTitle>
       <CardsContainer>
         {isEmpty ? (
@@ -38,6 +26,8 @@ export default function Column({ title, cards, isEmpty }) {
               topic={card.topic}
               date={card.date}
               theme={card.theme}
+              task={card} // Передаем всю карточку
+              onBrowseOpen={onBrowseOpen}
             />
           ))
         )}
