@@ -8,8 +8,8 @@ import {
   LoginInput, 
   LoginButton, 
   ErrorMessage,
-  LoginLink,
-  LoginText 
+  LoginText,
+  LoginLink
 } from './LoginPage.styled';
 
 export default function LoginPage() {
@@ -22,7 +22,6 @@ export default function LoginPage() {
   const handleLogin = () => {
     setError('');
 
-    // Простая имитация аутентификации
     if (email && password) {
       const token = 'fake-jwt-token';
       const userData = { 
@@ -64,7 +63,7 @@ export default function LoginPage() {
         <LoginButton type="submit">Войти</LoginButton>
         
         <LoginText>
-          Нет аккаунта? <LoginLink to="/register">Зарегистрироваться</LoginLink>
+          Нет аккаунта? <LoginLink as={Link} to="/register">Зарегистрироваться</LoginLink>
         </LoginText>
       </LoginForm>
     </LoginContainer>

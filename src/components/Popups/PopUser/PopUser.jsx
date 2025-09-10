@@ -1,4 +1,5 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import {
   PopUserContainer,
   PopUserName,
@@ -9,11 +10,14 @@ import {
 } from './PopUser.styled';
 
 export default function PopUser({ isOpen, onClose, onLogout }) {
+  const navigate = useNavigate();
+
   if (!isOpen) return null;
 
   const handleLogout = () => {
     onLogout();
     onClose();
+    navigate('/login');
   };
 
   return (

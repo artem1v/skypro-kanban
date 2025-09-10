@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import PopUser from '../Popups/PopUser/PopUser';
 import {
   HeaderContainer,
@@ -33,9 +33,9 @@ export default function Header({ onNewCardOpen }) {
       <Container>
         <HeaderBlock>
           <HeaderLogo>
-            <a href="/">
+            <Link to="/">
               <img src="/images/logo.png" alt="Логотип" />
-            </a>
+            </Link>
           </HeaderLogo>
           <HeaderNav>
             <HeaderButton onClick={handleNewCardClick}>

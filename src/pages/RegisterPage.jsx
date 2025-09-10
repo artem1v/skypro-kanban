@@ -8,8 +8,8 @@ import {
   LoginInput, 
   LoginButton, 
   ErrorMessage,
-  LoginLink,
-  LoginText 
+  LoginText,
+  LoginLink
 } from './LoginPage.styled';
 
 export default function RegisterPage() {
@@ -39,7 +39,6 @@ export default function RegisterPage() {
       return;
     }
 
-    // Имитация успешной регистрации
     const token = 'fake-jwt-token';
     const userData = { 
       name: name, 
@@ -96,7 +95,7 @@ export default function RegisterPage() {
         <LoginButton type="submit">Зарегистрироваться</LoginButton>
         
         <LoginText>
-          Уже есть аккаунт? <LoginLink to="/login">Войти</LoginLink>
+          Уже есть аккаунт? <LoginLink as={Link} to="/login">Войти</LoginLink>
         </LoginText>
       </LoginForm>
     </LoginContainer>
