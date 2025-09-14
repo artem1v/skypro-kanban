@@ -1,26 +1,51 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
+import {
+  PopExitContainer,
+  PopExitBlock,
+  PopExitContent,
+  PopExitTitle,
+  PopExitForm,
+  PopExitFormGroup,
+  PopExitYes,
+  PopExitNo
+} from './PopExit.styled';
 
+export default function PopExit({ isOpen, onClose }) {
+  const navigate = useNavigate();
 
-export default function PopExit() {
+  if (!isOpen) return null;
+
+  const handleExit = () => {
+    localStorage.removeItem('authToken');
+    localStorage.removeItem('userData');
+    navigate('/login');
+  };
+
+  const handleStay = () => {
+    onClose();
+    navigate('/');
+  };
+
   return (
-    <div className="pop-exit" id="popExit">
-      <div className="pop-exit__container">
-        <div className="pop-exit__block">
-          <div className="pop-exit__ttl">
+    <PopExitContainer>
+      <PopExitBlock>
+        <PopExitContent>
+          <PopExitTitle>
             <h2>Выйти из аккаунта?</h2>
-          </div>
-          <form className="pop-exit__form" id="formExit" action="#">
-            <div className="pop-exit__form-group">
-              <button className="pop-exit__exit-yes _hover01" id="exitYes">
-                <a href="modal/signin.html">Да, выйти</a>
-              </button>
-              <button className="pop-exit__exit-no _hover03" id="exitNo">
-                <a href="main.html">Нет, остаться</a>
-              </button>
-            </div>
-          </form>
-        </div>
-      </div>
-    </div>
+          </PopExitTitle>
+          <PopExitForm>
+            <PopExitFormGroup>
+              <PopExitYes onClick={handleExit}>
+                Да, выйти
+              </PopExitYes>
+              <PopExitNo onClick={handleStay}>
+                Нет, остаться
+              </PopExitNo>
+            </PopExitFormGroup>
+          </PopExitForm>
+        </PopExitContent>
+      </PopExitBlock>
+    </PopExitContainer>
   );
 }

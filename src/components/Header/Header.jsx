@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import PopUser from '../Popups/PopUser/PopUser';
 import {
   HeaderContainer,
@@ -11,15 +11,8 @@ import {
   HeaderUser
 } from './Header.styled';
 
-export default function Header({ onNewCardOpen }) {
+export default function Header({ onNewCardOpen, onOpenExit }) {
   const [isUserPopupOpen, setIsUserPopupOpen] = useState(false);
-  const navigate = useNavigate();
-
-  const handleLogout = () => {
-    localStorage.removeItem('authToken');
-    localStorage.removeItem('userData');
-    navigate('/login');
-  };
 
   const handleNewCardClick = () => {
     console.log('Кнопка "Создать задачу" нажата в Header');
@@ -49,7 +42,7 @@ export default function Header({ onNewCardOpen }) {
             <PopUser 
               isOpen={isUserPopupOpen} 
               onClose={() => setIsUserPopupOpen(false)}
-              onLogout={handleLogout}
+              onOpenExit={onOpenExit}
             />
           </HeaderNav>
         </HeaderBlock>

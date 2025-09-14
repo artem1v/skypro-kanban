@@ -3,33 +3,18 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-d
 import { ThemeProvider } from 'styled-components';
 import { GlobalStyles } from './GlobalStyles';
 import theme from './styles/theme';
-
-// Правильные импорты страниц
 import HomePage from './pages/HomePage';
 import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
 import NotFoundPage from './pages/NotFoundPage';
-
-// Правильные импорты компонентов
+import CardPage from './pages/CardPage';
 import ProtectedRoute from './components/ProtectedRoute/ProtectedRoute';
 import PopNewCard from './components/Popups/PopNewCard/PopNewCard';
-import PopBrowse from './components/Popups/PopBrowse/PopBrowse';
+import PopExit from './components/Popups/PopExit/PopExit';
 
 function App() {
   const [isNewCardOpen, setIsNewCardOpen] = useState(false);
-  const [isBrowseOpen, setIsBrowseOpen] = useState(false);
-  const [selectedTask, setSelectedTask] = useState(null);
-
-  const handleBrowseOpen = (task) => {
-    console.log('Opening task:', task);
-    setSelectedTask(task);
-    setIsBrowseOpen(true);
-  };
-
-  const handleBrowseClose = () => {
-    setIsBrowseOpen(false);
-    setSelectedTask(null);
-  };
+  const [isExitOpen, setIsExitOpen] = useState(false);
 
   const handleNewCardOpen = () => {
     console.log('Opening new card modal');
@@ -41,30 +26,41 @@ function App() {
     setIsNewCardOpen(false);
   };
 
+  const handleExitOpen = () => {
+    console.log('Opening exit modal');
+    setIsExitOpen(true);
+  };
+
+  const handleExitClose = () => {
+    console.log('Closing exit modal');
+    setIsExitOpen(false);
+  };
+
   return (
     <ThemeProvider theme={theme}>
       <GlobalStyles />
       <Router>
         <div className="wrapper">
           <Routes>
-            {/* Публичные маршруты */}
             <Route path="/login" element={<LoginPage />} />
             <Route path="/register" element={<RegisterPage />} />
             
-            {/* Защищенные маршруты */}
             <Route path="/" element={
               <ProtectedRoute>
                 <HomePage 
                   onNewCardOpen={handleNewCardOpen}
-                  onBrowseOpen={handleBrowseOpen}
+                  onOpenExit={handleExitOpen}
                 />
               </ProtectedRoute>
             } />
             
-            {/* Страница 404 */}
-            <Route path="/404" element={<NotFoundPage />} />
+            <Route path="/card/:id" element={
+              <ProtectedRoute>
+                <CardPage />
+              </ProtectedRoute>
+            } />
             
-            {/* Редкие случаи - перенаправление на 404 */}
+            <Route path="/404" element={<NotFoundPage />} />
             <Route path="*" element={<Navigate to="/404" replace />} />
           </Routes>
 
@@ -74,10 +70,9 @@ function App() {
             onClose={handleNewCardClose} 
           />
           
-          <PopBrowse 
-            isOpen={isBrowseOpen} 
-            onClose={handleBrowseClose}
-            task={selectedTask}
+          <PopExit 
+            isOpen={isExitOpen} 
+            onClose={handleExitClose} 
           />
         </div>
       </Router>

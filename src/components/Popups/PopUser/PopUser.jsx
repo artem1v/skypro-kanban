@@ -1,5 +1,4 @@
 import React from 'react';
-import { useNavigate } from 'react-router-dom';
 import {
   PopUserContainer,
   PopUserName,
@@ -9,15 +8,14 @@ import {
   PopUserButton
 } from './PopUser.styled';
 
-export default function PopUser({ isOpen, onClose, onLogout }) {
-  const navigate = useNavigate();
-
+export default function PopUser({ isOpen, onClose, onOpenExit }) {
   if (!isOpen) return null;
 
-  const handleLogout = () => {
-    onLogout();
+  const handleExitClick = () => {
+    if (onOpenExit && typeof onOpenExit === 'function') {
+      onOpenExit();
+    }
     onClose();
-    navigate('/login');
   };
 
   return (
@@ -30,7 +28,7 @@ export default function PopUser({ isOpen, onClose, onLogout }) {
         <PopUserCheckbox type="checkbox" className="checkbox" name="checkbox" />
       </PopUserTheme>
       
-      <PopUserButton onClick={handleLogout}>
+      <PopUserButton onClick={handleExitClick}>
         Выйти
       </PopUserButton>
     </PopUserContainer>

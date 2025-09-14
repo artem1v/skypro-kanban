@@ -1,4 +1,5 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import {
   CardItem,
   CardContainer,
@@ -10,19 +11,21 @@ import {
   CardDate
 } from './Card.styled';
 
-export default function Card({ title, topic, date, theme, onBrowseOpen, task }) {
+export default function Card({ title, topic, date, theme, task }) {
+  const navigate = useNavigate();
+
   const handleCardClick = () => {
     console.log('Карточка нажата:', task);
-    if (onBrowseOpen && task) {
-      onBrowseOpen(task); // Передаем данные карточки
+    if (task) {
+      navigate(`/card/${task.id}`);
     }
   };
 
   const handleButtonClick = (e) => {
-    e.stopPropagation(); // Останавливаем всплытие, чтобы не срабатывал клик по карточке
+    e.stopPropagation();
     console.log('Кнопка нажата:', task);
-    if (onBrowseOpen && task) {
-      onBrowseOpen(task);
+    if (task) {
+      navigate(`/card/${task.id}`);
     }
   };
 
