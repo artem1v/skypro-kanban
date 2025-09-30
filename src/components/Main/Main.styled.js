@@ -62,3 +62,28 @@ export const ColumnTitle = styled.div`
     font-weight: 700;
   }
 `;
+
+export const ErrorMessage = styled.div`
+  background: #fff2f0;
+  border: 1px solid #ffccc7;
+  color: #ff4d4f;
+  padding: 16px;
+  border-radius: 6px;
+  text-align: center;
+  margin: 20px 0;
+`;
+
+export const RetryButton = styled.button`
+  background: #ff4d4f;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 4px;
+  cursor: pointer;
+  margin-left: 12px;
+  font-weight: 500;
+
+  &:hover {
+    background: #d9363e;
+  }
+`;

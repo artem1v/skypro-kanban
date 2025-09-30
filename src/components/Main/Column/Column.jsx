@@ -7,7 +7,7 @@ import {
   EmptyColumn
 } from './Column.styled';
 
-export default function Column({ title, cards, isEmpty, onBrowseOpen }) {
+export default function Column({ title, tasks, isEmpty }) {
   return (
     <ColumnContainer>
       <ColumnTitle>
@@ -19,15 +19,10 @@ export default function Column({ title, cards, isEmpty, onBrowseOpen }) {
             <p>Нет задач</p>
           </EmptyColumn>
         ) : (
-          cards.map((card) => (
+          tasks.map((task) => (
             <Card
-              key={card.id}
-              title={card.title}
-              topic={card.topic}
-              date={card.date}
-              theme={card.theme}
-              task={card} // Передаем всю карточку
-              onBrowseOpen={onBrowseOpen}
+              key={task.id}
+              task={task}
             />
           ))
         )}

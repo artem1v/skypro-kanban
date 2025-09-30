@@ -1,33 +1,47 @@
-import React, { useState, useEffect } from "react";
-import Column from "./Column/Column";
-import Loader from "../CardLoader/Loader";
-import CardLoader from "../CardLoader/CardLoader";
-import { cardsData } from "../../data";
+import React, { useState, useEffect } from 'react';
+import Column from './Column/Column';
+import Loader from '../CardLoader/Loader';
+import CardLoader from '../CardLoader/CardLoader';
+import { tasksAPI } from '../../api/tasks';
 import {
   MainContainer,
   MainColumnsContainer,
   MainColumnWrapper,
   LoadingContainer,
   ColumnTitle,
-} from "./Main.styled";
+  ErrorMessage,
+  RetryButton
+} from './Main.styled';
 
-export default function Main({ onBrowseOpen }) {
+export default function Main({ onTaskCreated }) {
   const [isLoading, setIsLoading] = useState(true);
   const [cards, setCards] = useState([]);
+  const [error, setError] = useState('');
 
   useEffect(() => {
-    setTimeout(() => {
-      setCards(cardsData);
-      setIsLoading(false);
-    }, 1500);
+    loadTasks();
   }, []);
+
+  const loadTasks = async () => {
+    try {
+      setIsLoading(true);
+      setError('');
+      const tasks = await tasksAPI.getTasks();
+      setCards(tasks);
+    } catch (err) {
+      setError(err.message);
+      console.error('Error loading tasks:', err);
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   const columnStatuses = [
     "Без статуса",
-    "Нужно сделать",
+    "Нужно сделать", 
     "В работе",
     "Тестирование",
-    "Готово",
+    "Готово"
   ];
 
   if (isLoading) {
@@ -54,25 +68,39 @@ export default function Main({ onBrowseOpen }) {
     );
   }
 
-return (
-  <MainContainer>
-    <div className="container">
-      <MainColumnsContainer>
-        {columnStatuses.map((status) => {
-          const filteredCards = cards.filter(card => card.status === status);
-          return (
-            <MainColumnWrapper key={status}>
-              <Column 
-                title={status}
-                cards={filteredCards}
-                isEmpty={filteredCards.length === 0}
-                onBrowseOpen={onBrowseOpen}
-              />
-            </MainColumnWrapper>
-          );
-        })}
-      </MainColumnsContainer>
-    </div>
-  </MainContainer>
-);
+  if (error) {
+    return (
+      <MainContainer>
+        <div className="container">
+          <ErrorMessage>
+            {error}
+            <RetryButton onClick={loadTasks}>
+              Попробовать снова
+            </RetryButton>
+          </ErrorMessage>
+        </div>
+      </MainContainer>
+    );
+  }
+
+  return (
+    <MainContainer>
+      <div className="container">
+        <MainColumnsContainer>
+          {columnStatuses.map((status) => {
+            const filteredCards = cards.filter(card => card.status === status);
+            return (
+              <MainColumnWrapper key={status}>
+                <Column 
+                  title={status}
+                  cards={filteredCards}
+                  isEmpty={filteredCards.length === 0}
+                />
+              </MainColumnWrapper>
+            );
+          })}
+        </MainColumnsContainer>
+      </div>
+    </MainContainer>
+  );
 }

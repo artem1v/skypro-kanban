@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { tasksAPI } from '../../../api/tasks';
 import {
   PopNewCardContainer,
   PopNewCardBlock,
@@ -30,13 +31,19 @@ import {
   CategoriesTitle,
   CategoriesThemes,
   CategoriesTheme,
-  FormNewCreate
+  FormNewCreate,
 } from './PopNewCard.styled';
 
-export default function PopNewCard({ isOpen, onClose }) {
-  const [title, setTitle] = useState('');
-  const [description, setDescription] = useState('');
-  const [selectedCategory, setSelectedCategory] = useState('Web Design');
+export default function PopNewCard({ isOpen, onClose, onTaskCreated }) {
+  const [formData, setFormData] = useState({
+    title: '',
+    description: '',
+    topic: 'Web Design',
+    date: new Date().toLocaleDateString('ru-RU'),
+    status: 'Без статуса'
+  });
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
 
   if (!isOpen) return null;
 
@@ -46,18 +53,40 @@ export default function PopNewCard({ isOpen, onClose }) {
     { name: 'Copywriting', theme: 'purple' }
   ];
 
-  const handleSubmit = (e) => {
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({
+      ...prev,
+      [name]: value
+    }));
+  };
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log('Создаем задачу:', { title, description, category: selectedCategory });
-    onClose();
+    setError('');
+    setLoading(true);
+
+    try {
+      await tasksAPI.createTask(formData);
+      onClose();
+      if (onTaskCreated) {
+        onTaskCreated(); // Обновить список задач
+      }
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
-    <PopNewCardContainer $isOpen={isOpen}> {/* Передаем isOpen как проп */}
+    <PopNewCardContainer $isOpen={isOpen}>
       <PopNewCardBlock>
         <PopNewCardContent>
           <PopNewCardTitle>Создание задачи</PopNewCardTitle>
           <PopNewCardClose onClick={onClose}>✕</PopNewCardClose>
+          
+          {error && <ErrorMessage>{error}</ErrorMessage>}
           
           <PopNewCardWrap>
             <PopNewCardForm id="formNewCard" onSubmit={handleSubmit}>
@@ -65,10 +94,11 @@ export default function PopNewCard({ isOpen, onClose }) {
                 <FormNewLabel htmlFor="formTitle">Название задачи</FormNewLabel>
                 <FormNewInput
                   type="text"
+                  name="title"
                   id="formTitle"
                   placeholder="Введите название задачи..."
-                  value={title}
-                  onChange={(e) => setTitle(e.target.value)}
+                  value={formData.title}
+                  onChange={handleInputChange}
                   autoFocus
                   required
                 />
@@ -77,10 +107,11 @@ export default function PopNewCard({ isOpen, onClose }) {
               <FormNewBlock>
                 <FormNewLabel htmlFor="textArea">Описание задачи</FormNewLabel>
                 <FormNewTextarea
+                  name="description"
                   id="textArea"
                   placeholder="Введите описание задачи..."
-                  value={description}
-                  onChange={(e) => setDescription(e.target.value)}
+                  value={formData.description}
+                  onChange={handleInputChange}
                   rows="4"
                 />
               </FormNewBlock>
@@ -140,8 +171,8 @@ export default function PopNewCard({ isOpen, onClose }) {
               {categories.map((category) => (
                 <CategoriesTheme
                   key={category.name}
-                  className={`_${category.theme} ${selectedCategory === category.name ? '_active-category' : ''}`}
-                  onClick={() => setSelectedCategory(category.name)}
+                  className={`_${category.theme} ${formData.topic === category.name ? '_active-category' : ''}`}
+                  onClick={() => setFormData(prev => ({ ...prev, topic: category.name }))}
                 >
                   <p className={`_${category.theme}`}>{category.name}</p>
                 </CategoriesTheme>
@@ -149,8 +180,12 @@ export default function PopNewCard({ isOpen, onClose }) {
             </CategoriesThemes>
           </PopNewCardCategories>
           
-          <FormNewCreate type="submit" onClick={handleSubmit}>
-            Создать задачу
+          <FormNewCreate 
+            type="submit" 
+            onClick={handleSubmit}
+            disabled={loading}
+          >
+            {loading ? 'Создание...' : 'Создать задачу'}
           </FormNewCreate>
         </PopNewCardContent>
       </PopNewCardBlock>
