@@ -20,14 +20,14 @@ export function useAuth() {
     }
 
     try {
-      const userInfo = await authAPI.checkAuth();
+      const userInfo = await authAPI.getCurrentUser();
       setIsAuthenticated(true);
       setUser(userInfo);
     } catch (err) {
-      // Токен невалиден, очищаем localStorage
+      // Токен невалиден или сервер недоступен
+      console.error('Auth check failed:', err);
       localStorage.removeItem('authToken');
       localStorage.removeItem('userData');
-      setError(err.message);
     } finally {
       setLoading(false);
     }
@@ -40,6 +40,7 @@ export function useAuth() {
     try {
       const response = await authAPI.login({ email, password });
       
+      // Сохраняем токен и данные пользователя
       localStorage.setItem('authToken', response.token);
       localStorage.setItem('userData', JSON.stringify(response.user));
       

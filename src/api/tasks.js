@@ -1,15 +1,15 @@
 import { apiClient } from './axiosConfig';
 
 export const tasksAPI = {
-  // Получить все задачи
+  // Получить все задачи пользователя
   async getTasks() {
     try {
       const response = await apiClient.get('/tasks');
-      return response.data;
+      return response.data.tasks || response.data; // В зависимости от структуры ответа
     } catch (error) {
       throw new Error(
         error.response?.data?.message || 
-        'Не удалось загрузить задачи. Попробуйте позже.'
+        'Не удалось загрузить задачи.'
       );
     }
   },
@@ -18,7 +18,7 @@ export const tasksAPI = {
   async getTaskById(id) {
     try {
       const response = await apiClient.get(`/tasks/${id}`);
-      return response.data;
+      return response.data.task || response.data;
     } catch (error) {
       throw new Error(
         error.response?.data?.message || 
@@ -30,12 +30,18 @@ export const tasksAPI = {
   // Создать задачу
   async createTask(taskData) {
     try {
-      const response = await apiClient.post('/tasks', taskData);
-      return response.data;
+      const response = await apiClient.post('/tasks', {
+        title: taskData.title,
+        description: taskData.description,
+        status: taskData.status || 'Без статуса',
+        priority: taskData.topic || 'Web Design', // Предполагаем, что topic = priority
+        dueDate: taskData.date || new Date().toISOString()
+      });
+      return response.data.task || response.data;
     } catch (error) {
       throw new Error(
         error.response?.data?.message || 
-        'Не удалось создать задачу. Проверьте введенные данные.'
+        'Не удалось создать задачу.'
       );
     }
   },
@@ -44,7 +50,7 @@ export const tasksAPI = {
   async updateTask(id, taskData) {
     try {
       const response = await apiClient.put(`/tasks/${id}`, taskData);
-      return response.data;
+      return response.data.task || response.data;
     } catch (error) {
       throw new Error(
         error.response?.data?.message || 
@@ -62,6 +68,21 @@ export const tasksAPI = {
       throw new Error(
         error.response?.data?.message || 
         'Не удалось удалить задачу.'
+      );
+    }
+  },
+
+  // Изменить статус задачи
+  async changeTaskStatus(id, newStatus) {
+    try {
+      const response = await apiClient.patch(`/tasks/${id}/status`, {
+        status: newStatus
+      });
+      return response.data.task || response.data;
+    } catch (error) {
+      throw new Error(
+        error.response?.data?.message || 
+        'Не удалось изменить статус задачи.'
       );
     }
   }

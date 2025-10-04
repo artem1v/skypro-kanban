@@ -87,3 +87,13 @@ export const RetryButton = styled.button`
     background: #d9363e;
   }
 `;
+
+export const WarningMessage = styled.div`
+  background: ${props => props.$isError ? '#fff2f0' : '#fffbe6'};
+  border: 1px solid ${props => props.$isError ? '#ffccc7' : '#ffe58f'};
+  color: ${props => props.$isError ? '#ff4d4f' : '#d48806'};
+  padding: 16px;
+  border-radius: 6px;
+  text-align: center;
+  margin: 20px 0;
+`;

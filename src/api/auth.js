@@ -4,7 +4,11 @@ export const authAPI = {
   // Регистрация
   async register(userData) {
     try {
-      const response = await apiClient.post('/auth/register', userData);
+      const response = await apiClient.post('/auth/register', {
+        username: userData.name,
+        email: userData.email,
+        password: userData.password
+      });
       return response.data;
     } catch (error) {
       throw new Error(
@@ -17,7 +21,10 @@ export const authAPI = {
   // Авторизация
   async login(credentials) {
     try {
-      const response = await apiClient.post('/auth/login', credentials);
+      const response = await apiClient.post('/auth/login', {
+        email: credentials.email,
+        password: credentials.password
+      });
       return response.data;
     } catch (error) {
       throw new Error(
@@ -27,15 +34,15 @@ export const authAPI = {
     }
   },
 
-  // Проверка токена
-  async checkAuth() {
+  // Проверка токена (получение данных пользователя)
+  async getCurrentUser() {
     try {
       const response = await apiClient.get('/auth/me');
       return response.data;
     } catch (error) {
       throw new Error(
         error.response?.data?.message || 
-        'Сессия истекла. Пожалуйста, войдите снова.'
+        'Не удалось получить данные пользователя.'
       );
     }
   },

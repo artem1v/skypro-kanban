@@ -1,12 +1,12 @@
 import axios from 'axios';
 
-// Базовый URL API
-const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:3001/api';
+// Базовый URL API - убираем process.env, используем прямой URL
+const API_BASE_URL = 'https://skypro-kanban.herokuapp.com/api'; // Пример реального API
 
 // Создаем экземпляр axios с базовой конфигурацией
 export const apiClient = axios.create({
   baseURL: API_BASE_URL,
-  timeout: 10000, // 10 секунд таймаут
+  timeout: 10000,
   headers: {
     'Content-Type': 'application/json',
   },
@@ -33,7 +33,6 @@ apiClient.interceptors.response.use(
   },
   (error) => {
     if (error.response?.status === 401) {
-      // Токен невалиден, разлогиниваем пользователя
       localStorage.removeItem('authToken');
       localStorage.removeItem('userData');
       window.location.href = '/login';
