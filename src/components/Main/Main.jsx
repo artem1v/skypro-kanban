@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import Column from './Column/Column';
-import Loader from '../Loader/Loader';
+import Loader from '../CardLoader/Loader';
 import CardLoader from '../CardLoader/CardLoader';
 import { tasksAPI } from '../../api/tasks';
 import { cardsData } from '../../data'; // Импортируем локальные данные как fallback
