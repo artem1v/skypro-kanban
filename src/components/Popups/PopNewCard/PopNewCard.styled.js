@@ -271,3 +271,15 @@ export const FormNewCreate = styled.button`
     background: #3d44b3;
   }
 `;
+
+
+export const ErrorMessage = styled.div`
+  color: #ff4d4f;
+  background: #fff2f0;
+  border: 1px solid #ffccc7;
+  padding: 10px;
+  border-radius: 4px;
+  margin-bottom: 15px;
+  font-size: 14px;
+  text-align: center;
+`;

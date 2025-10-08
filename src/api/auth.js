@@ -1,58 +1,49 @@
 import { apiClient } from './axiosConfig';
 
 export const authAPI = {
-  // Регистрация
+  // Регистрация - POST /user
   async register(userData) {
     try {
-      const response = await apiClient.post('/auth/register', {
-        username: userData.name,
+      const response = await apiClient.post('/user', {
+        name: userData.name,
         email: userData.email,
-        password: userData.password
+        password: userData.password,
       });
       return response.data;
     } catch (error) {
       throw new Error(
-        error.response?.data?.message || 
-        'Ошибка регистрации. Проверьте введенные данные.'
+        error.response?.data?.error || 
+        'Ошибка регистрации. Пользователь с таким email уже существует.'
       );
     }
   },
 
-  // Авторизация
+  // Авторизация - POST /user/login
   async login(credentials) {
     try {
-      const response = await apiClient.post('/auth/login', {
+      const response = await apiClient.post('/user/login', {
         email: credentials.email,
-        password: credentials.password
+        password: credentials.password,
       });
       return response.data;
     } catch (error) {
       throw new Error(
-        error.response?.data?.message || 
-        'Ошибка авторизации. Проверьте email и пароль.'
+        error.response?.data?.error || 
+        'Неверный email или пароль.'
       );
     }
   },
 
-  // Проверка токена (получение данных пользователя)
+  // Получение данных пользователя - GET /user
   async getCurrentUser() {
     try {
-      const response = await apiClient.get('/auth/me');
+      const response = await apiClient.get('/user');
       return response.data;
     } catch (error) {
       throw new Error(
-        error.response?.data?.message || 
+        error.response?.data?.error || 
         'Не удалось получить данные пользователя.'
       );
-    }
-  },
-
-  // Выход
-  async logout() {
-    try {
-      await apiClient.post('/auth/logout');
-    } catch (error) {
-      console.error('Logout error:', error);
     }
   }
 };

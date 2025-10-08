@@ -3,23 +3,19 @@ import Column from './Column/Column';
 import Loader from '../CardLoader/Loader';
 import CardLoader from '../CardLoader/CardLoader';
 import { tasksAPI } from '../../api/tasks';
-import { cardsData } from '../../data'; // Импортируем локальные данные как fallback
 import {
   MainContainer,
   MainColumnsContainer,
   MainColumnWrapper,
-  LoadingContainer,
   ColumnTitle,
   ErrorMessage,
-  RetryButton,
-  WarningMessage
+  RetryButton
 } from './Main.styled';
 
-export default function Main() {
+export default function Main() { // Убираем onTaskCreated из пропсов
   const [isLoading, setIsLoading] = useState(true);
-  const [cards, setCards] = useState([]);
+  const [tasks, setTasks] = useState([]);
   const [error, setError] = useState('');
-  const [usingFallback, setUsingFallback] = useState(false);
 
   useEffect(() => {
     loadTasks();
@@ -29,26 +25,17 @@ export default function Main() {
     try {
       setIsLoading(true);
       setError('');
-      setUsingFallback(false);
-      
-      const tasks = await tasksAPI.getTasks();
-      setCards(tasks);
-      
+      const tasksData = await tasksAPI.getTasks();
+      setTasks(tasksData);
     } catch (err) {
-      console.error('API Error:', err);
-      
-      // Если API недоступно, используем локальные данные
-      if (err.message.includes('Failed to fetch') || err.message.includes('Network Error')) {
-        setError('Сервер временно недоступен. Используются демо-данные.');
-        setUsingFallback(true);
-        setCards(cardsData); // Используем локальные данные
-      } else {
-        setError(err.message);
-      }
+      setError(err.message);
+      console.error('Error loading tasks:', err);
     } finally {
       setIsLoading(false);
     }
   };
+
+  // ... остальной код без изменений ...
 
   const columnStatuses = [
     "Без статуса",
@@ -82,29 +69,33 @@ export default function Main() {
     );
   }
 
+  if (error) {
+    return (
+      <MainContainer>
+        <div className="container">
+          <ErrorMessage>
+            {error}
+            <RetryButton onClick={loadTasks}>
+              Попробовать снова
+            </RetryButton>
+          </ErrorMessage>
+        </div>
+      </MainContainer>
+    );
+  }
+
   return (
     <MainContainer>
       <div className="container">
-        {error && (
-          <WarningMessage $isError={!usingFallback}>
-            {error}
-            {!usingFallback && (
-              <RetryButton onClick={loadTasks}>
-                Попробовать снова
-              </RetryButton>
-            )}
-          </WarningMessage>
-        )}
-        
         <MainColumnsContainer>
           {columnStatuses.map((status) => {
-            const filteredCards = cards.filter(card => card.status === status);
+            const filteredTasks = tasks.filter(task => task.status === status);
             return (
               <MainColumnWrapper key={status}>
                 <Column 
                   title={status}
-                  cards={filteredCards}
-                  isEmpty={filteredCards.length === 0}
+                  tasks={filteredTasks}
+                  isEmpty={filteredTasks.length === 0}
                 />
               </MainColumnWrapper>
             );

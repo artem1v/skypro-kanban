@@ -1,7 +1,7 @@
 import axios from 'axios';
 
-// Базовый URL API - убираем process.env, используем прямой URL
-const API_BASE_URL = 'https://skypro-kanban.herokuapp.com/api'; // Пример реального API
+// Базовый URL API согласно документации
+const API_BASE_URL = 'https://webdev-hw-api.vercel.app/api/v2/glebkaf';
 
 // Создаем экземпляр axios с базовой конфигурацией
 export const apiClient = axios.create({

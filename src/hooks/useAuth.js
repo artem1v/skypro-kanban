@@ -24,7 +24,6 @@ export function useAuth() {
       setIsAuthenticated(true);
       setUser(userInfo);
     } catch (err) {
-      // Токен невалиден или сервер недоступен
       console.error('Auth check failed:', err);
       localStorage.removeItem('authToken');
       localStorage.removeItem('userData');
@@ -78,18 +77,12 @@ export function useAuth() {
     }
   };
 
-  const logout = async () => {
-    try {
-      await authAPI.logout();
-    } catch (err) {
-      console.error('Logout error:', err);
-    } finally {
-      localStorage.removeItem('authToken');
-      localStorage.removeItem('userData');
-      setIsAuthenticated(false);
-      setUser(null);
-      setError('');
-    }
+  const logout = () => {
+    localStorage.removeItem('authToken');
+    localStorage.removeItem('userData');
+    setIsAuthenticated(false);
+    setUser(null);
+    setError('');
   };
 
   return {

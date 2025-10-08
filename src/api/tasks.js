@@ -1,88 +1,60 @@
 import { apiClient } from './axiosConfig';
 
 export const tasksAPI = {
-  // Получить все задачи пользователя
+  // Получить все задачи пользователя - GET /kanban/tasks
   async getTasks() {
     try {
-      const response = await apiClient.get('/tasks');
-      return response.data.tasks || response.data; // В зависимости от структуры ответа
+      const response = await apiClient.get('/kanban/tasks');
+      return response.data;
     } catch (error) {
       throw new Error(
-        error.response?.data?.message || 
+        error.response?.data?.error || 
         'Не удалось загрузить задачи.'
       );
     }
   },
 
-  // Получить задачу по ID
-  async getTaskById(id) {
-    try {
-      const response = await apiClient.get(`/tasks/${id}`);
-      return response.data.task || response.data;
-    } catch (error) {
-      throw new Error(
-        error.response?.data?.message || 
-        'Задача не найдена.'
-      );
-    }
-  },
-
-  // Создать задачу
+  // Создать задачу - POST /kanban/tasks
   async createTask(taskData) {
     try {
-      const response = await apiClient.post('/tasks', {
+      const response = await apiClient.post('/kanban/tasks', {
         title: taskData.title,
         description: taskData.description,
+        topic: taskData.topic || 'Web Design',
         status: taskData.status || 'Без статуса',
-        priority: taskData.topic || 'Web Design', // Предполагаем, что topic = priority
-        dueDate: taskData.date || new Date().toISOString()
+        date: taskData.date || new Date().toISOString().split('T')[0]
       });
-      return response.data.task || response.data;
+      return response.data;
     } catch (error) {
       throw new Error(
-        error.response?.data?.message || 
+        error.response?.data?.error || 
         'Не удалось создать задачу.'
       );
     }
   },
 
-  // Обновить задачу
+  // Редактировать задачу - PUT /kanban/tasks/{id}
   async updateTask(id, taskData) {
     try {
-      const response = await apiClient.put(`/tasks/${id}`, taskData);
-      return response.data.task || response.data;
+      const response = await apiClient.put(`/kanban/tasks/${id}`, taskData);
+      return response.data;
     } catch (error) {
       throw new Error(
-        error.response?.data?.message || 
+        error.response?.data?.error || 
         'Не удалось обновить задачу.'
       );
     }
   },
 
-  // Удалить задачу
+  // Удалить задачу - DELETE /kanban/tasks/{id}
   async deleteTask(id) {
     try {
-      const response = await apiClient.delete(`/tasks/${id}`);
+      const response = await apiClient.delete(`/kanban/tasks/${id}`);
       return response.data;
     } catch (error) {
       throw new Error(
-        error.response?.data?.message || 
+        error.response?.data?.error || 
         'Не удалось удалить задачу.'
-      );
-    }
-  },
-
-  // Изменить статус задачи
-  async changeTaskStatus(id, newStatus) {
-    try {
-      const response = await apiClient.patch(`/tasks/${id}/status`, {
-        status: newStatus
-      });
-      return response.data.task || response.data;
-    } catch (error) {
-      throw new Error(
-        error.response?.data?.message || 
-        'Не удалось изменить статус задачи.'
       );
     }
   }
