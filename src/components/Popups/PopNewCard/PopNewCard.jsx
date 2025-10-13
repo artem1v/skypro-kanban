@@ -16,16 +16,15 @@ import {
   CategoriesThemes,
   CategoriesTheme,
   FormNewCreate,
-  ErrorMessage // Теперь этот импорт работает
+  ErrorMessage
 } from './PopNewCard.styled';
 
-export default function PopNewCard({ isOpen, onClose }) { // Убираем onTaskCreated если он не используется
+export default function PopNewCard({ isOpen, onClose }) {
   const [formData, setFormData] = useState({
     title: '',
     description: '',
     topic: 'Web Design',
-    status: 'Без статуса',
-    date: new Date().toISOString().split('T')[0]
+    status: 'Без статуса'
   });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
@@ -54,8 +53,8 @@ export default function PopNewCard({ isOpen, onClose }) { // Убираем onTa
     try {
       await tasksAPI.createTask(formData);
       onClose();
-      // Если нужно обновить список задач, можно добавить window.location.reload()
-      // или вызвать callback функцию для обновления состояния
+      // Перезагружаем страницу чтобы обновить задачи
+      window.location.reload();
     } catch (err) {
       setError(err.message);
     } finally {
@@ -97,6 +96,22 @@ export default function PopNewCard({ isOpen, onClose }) { // Убираем onTa
                 onChange={handleInputChange}
                 rows="4"
               />
+            </FormNewBlock>
+
+            <FormNewBlock>
+              <FormNewLabel>Статус</FormNewLabel>
+              <FormNewInput
+                as="select"
+                name="status"
+                value={formData.status}
+                onChange={handleInputChange}
+              >
+                <option value="Без статуса">Без статуса</option>
+                <option value="Нужно сделать">Нужно сделать</option>
+                <option value="В работе">В работе</option>
+                <option value="Тестирование">Тестирование</option>
+                <option value="Готово">Готово</option>
+              </FormNewInput>
             </FormNewBlock>
 
             <PopNewCardCategories>

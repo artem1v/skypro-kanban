@@ -8,7 +8,7 @@ import {
   PopUserButton
 } from './PopUser.styled';
 
-export default function PopUser({ isOpen, onClose, onOpenExit }) {
+export default function PopUser({ isOpen, onClose, onOpenExit, user }) {
   if (!isOpen) return null;
 
   const handleExitClick = () => {
@@ -20,8 +20,8 @@ export default function PopUser({ isOpen, onClose, onOpenExit }) {
 
   return (
     <PopUserContainer>
-      <PopUserName>Ivan Ivanov</PopUserName>
-      <PopUserMail>ivan.ivanov@gmail.com</PopUserMail>
+      <PopUserName>{user?.name || 'Пользователь'}</PopUserName>
+      <PopUserMail>{user?.email || 'email@example.com'}</PopUserMail>
       
       <PopUserTheme>
         <p>Темная тема</p>

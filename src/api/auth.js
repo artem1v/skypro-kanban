@@ -1,49 +1,41 @@
-import { apiClient } from './axiosConfig';
+import axios from 'axios';
 
-export const authAPI = {
-  // Регистрация - POST /user
-  async register(userData) {
-    try {
-      const response = await apiClient.post('/user', {
-        name: userData.name,
-        email: userData.email,
-        password: userData.password,
-      });
-      return response.data;
-    } catch (error) {
-      throw new Error(
-        error.response?.data?.error || 
-        'Ошибка регистрации. Пользователь с таким email уже существует.'
-      );
-    }
-  },
+const API_URL = 'https://wedev-api.sky.pro/api/user';
 
-  // Авторизация - POST /user/login
-  async login(credentials) {
-    try {
-      const response = await apiClient.post('/user/login', {
-        email: credentials.email,
-        password: credentials.password,
-      });
-      return response.data;
-    } catch (error) {
-      throw new Error(
-        error.response?.data?.error || 
-        'Неверный email или пароль.'
-      );
-    }
-  },
-
-  // Получение данных пользователя - GET /user
-  async getCurrentUser() {
-    try {
-      const response = await apiClient.get('/user');
-      return response.data;
-    } catch (error) {
-      throw new Error(
-        error.response?.data?.error || 
-        'Не удалось получить данные пользователя.'
-      );
-    }
+export async function login({ email, password }) {
+  try {
+    const response = await axios.post(`${API_URL}/login`, {
+      email,
+      password,
+    });
+    return response.data;
+  } catch (error) {
+    throw new Error(error.response?.data?.error || 'Ошибка авторизации');
   }
-};
+}
+
+export async function register({ name, email, password }) {
+  try {
+    const response = await axios.post(API_URL, {
+      name,
+      email,
+      password,
+    });
+    return response.data;
+  } catch (error) {
+    throw new Error(error.response?.data?.error || 'Ошибка регистрации');
+  }
+}
+
+export async function getCurrentUser(token) {
+  try {
+    const response = await axios.get(`${API_URL}/me`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    return response.data;
+  } catch (error) {
+    throw new Error(error.response?.data?.error || 'Ошибка получения данных пользователя');
+  }
+}

@@ -71,6 +71,19 @@ export const ErrorMessage = styled.div`
   border-radius: 6px;
   text-align: center;
   margin: 20px 0;
+  
+  button {
+    background: #565EEF;
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 4px;
+    cursor: pointer;
+    
+    &:hover {
+      background: #3d44b3;
+    }
+  }
 `;
 
 export const RetryButton = styled.button`

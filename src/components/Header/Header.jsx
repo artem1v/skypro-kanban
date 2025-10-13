@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
+import { useAuth } from '../../hooks/useAuth';
 import PopUser from '../Popups/PopUser/PopUser';
 import {
   HeaderContainer,
@@ -13,9 +14,9 @@ import {
 
 export default function Header({ onNewCardOpen, onOpenExit }) {
   const [isUserPopupOpen, setIsUserPopupOpen] = useState(false);
+  const { user } = useAuth();
 
   const handleNewCardClick = () => {
-    console.log('Кнопка "Создать задачу" нажата в Header');
     if (onNewCardOpen) {
       onNewCardOpen();
     }
@@ -37,12 +38,13 @@ export default function Header({ onNewCardOpen, onOpenExit }) {
             <HeaderUser 
               onClick={() => setIsUserPopupOpen(!isUserPopupOpen)}
             >
-              Ivan Ivanov
+              {user?.name || 'Пользователь'}
             </HeaderUser>
             <PopUser 
               isOpen={isUserPopupOpen} 
               onClose={() => setIsUserPopupOpen(false)}
               onOpenExit={onOpenExit}
+              user={user}
             />
           </HeaderNav>
         </HeaderBlock>

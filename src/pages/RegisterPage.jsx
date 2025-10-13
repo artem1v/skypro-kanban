@@ -9,8 +9,7 @@ import {
   LoginButton, 
   ErrorMessage,
   LoginText,
-  LoginLink,
-  LoadingSpinner
+  LoginLink
 } from './LoginPage.styled';
 
 export default function RegisterPage() {
@@ -18,21 +17,18 @@ export default function RegisterPage() {
     name: '',
     email: '',
     password: '',
-    confirmPassword: ''
+    confirmPassword: '',
   });
   const [errors, setErrors] = useState({});
   const { register, loading } = useAuth();
   const navigate = useNavigate();
 
-  // Двустороннее связывание
-  const handleInputChange = (e) => {
+  const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData(prev => ({
       ...prev,
       [name]: value
     }));
-    
-    // Очищаем ошибку при изменении поля
     if (errors[name]) {
       setErrors(prev => ({
         ...prev,
@@ -43,29 +39,29 @@ export default function RegisterPage() {
 
   const validateForm = () => {
     const newErrors = {};
-
+    
     if (!formData.name.trim()) {
       newErrors.name = 'Имя обязательно';
     }
-
-    if (!formData.email) {
+    
+    if (!formData.email.trim()) {
       newErrors.email = 'Email обязателен';
     } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
-      newErrors.email = 'Некорректный формат email';
+      newErrors.email = 'Некорректный email';
     }
-
-    if (!formData.password) {
+    
+    if (!formData.password.trim()) {
       newErrors.password = 'Пароль обязателен';
     } else if (formData.password.length < 6) {
       newErrors.password = 'Пароль должен содержать минимум 6 символов';
     }
-
-    if (!formData.confirmPassword) {
+    
+    if (!formData.confirmPassword.trim()) {
       newErrors.confirmPassword = 'Подтверждение пароля обязательно';
     } else if (formData.password !== formData.confirmPassword) {
       newErrors.confirmPassword = 'Пароли не совпадают';
     }
-
+    
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
@@ -81,8 +77,7 @@ export default function RegisterPage() {
       await register(formData.name, formData.email, formData.password);
       navigate('/');
     } catch (error) {
-      // Ошибка уже обработана в хуке useAuth
-      console.error('Register error:', error);
+      setErrors({ submit: error.message });
     }
   };
 
@@ -91,60 +86,62 @@ export default function RegisterPage() {
       <LoginForm as="form" onSubmit={handleSubmit}>
         <LoginTitle>Регистрация</LoginTitle>
         
+        {errors.submit && <ErrorMessage>{errors.submit}</ErrorMessage>}
+        
         <div>
           <LoginInput 
             type="text" 
             name="name"
             placeholder="Имя и фамилия" 
             value={formData.name}
-            onChange={handleInputChange}
+            onChange={handleChange}
+            $error={!!errors.name}
             required
-            $hasError={!!errors.name}
           />
           {errors.name && <ErrorMessage>{errors.name}</ErrorMessage>}
         </div>
-
+        
         <div>
           <LoginInput 
             type="email" 
             name="email"
             placeholder="Email" 
             value={formData.email}
-            onChange={handleInputChange}
+            onChange={handleChange}
+            $error={!!errors.email}
             required
-            $hasError={!!errors.email}
           />
           {errors.email && <ErrorMessage>{errors.email}</ErrorMessage>}
         </div>
-
+        
         <div>
           <LoginInput 
             type="password" 
             name="password"
             placeholder="Пароль" 
             value={formData.password}
-            onChange={handleInputChange}
+            onChange={handleChange}
+            $error={!!errors.password}
             required
-            $hasError={!!errors.password}
           />
           {errors.password && <ErrorMessage>{errors.password}</ErrorMessage>}
         </div>
-
+        
         <div>
           <LoginInput 
             type="password" 
             name="confirmPassword"
             placeholder="Подтвердите пароль" 
             value={formData.confirmPassword}
-            onChange={handleInputChange}
+            onChange={handleChange}
+            $error={!!errors.confirmPassword}
             required
-            $hasError={!!errors.confirmPassword}
           />
           {errors.confirmPassword && <ErrorMessage>{errors.confirmPassword}</ErrorMessage>}
         </div>
-
+        
         <LoginButton type="submit" disabled={loading}>
-          {loading ? <LoadingSpinner /> : 'Зарегистрироваться'}
+          {loading ? 'Загрузка...' : 'Зарегистрироваться'}
         </LoginButton>
         
         <LoginText>

@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 // Базовый URL API согласно документации
-const API_BASE_URL = 'https://webdev-hw-api.vercel.app/api/v2/glebkaf';
+const API_BASE_URL = 'https://webdev-hw-api.vercel.app/api/v2';
 
 // Создаем экземпляр axios с базовой конфигурацией
 export const apiClient = axios.create({

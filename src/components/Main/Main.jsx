@@ -2,17 +2,17 @@ import React, { useState, useEffect } from 'react';
 import Column from './Column/Column';
 import Loader from '../CardLoader/Loader';
 import CardLoader from '../CardLoader/CardLoader';
-import { tasksAPI } from '../../api/tasks';
+import { getTasks } from '../../services/kanban';
 import {
   MainContainer,
   MainColumnsContainer,
   MainColumnWrapper,
+  LoadingContainer,
   ColumnTitle,
-  ErrorMessage,
-  RetryButton
+  ErrorMessage
 } from './Main.styled';
 
-export default function Main() { // Убираем onTaskCreated из пропсов
+export default function Main() {
   const [isLoading, setIsLoading] = useState(true);
   const [tasks, setTasks] = useState([]);
   const [error, setError] = useState('');
@@ -25,21 +25,23 @@ export default function Main() { // Убираем onTaskCreated из пропс
     try {
       setIsLoading(true);
       setError('');
-      const tasksData = await tasksAPI.getTasks();
+      const token = localStorage.getItem('authToken');
+      if (!token) {
+        throw new Error('Токен авторизации не найден');
+      }
+      const tasksData = await getTasks(token);
       setTasks(tasksData);
-    } catch (err) {
-      setError(err.message);
-      console.error('Error loading tasks:', err);
+    } catch (error) {
+      setError(error.message);
+      console.error('Ошибка загрузки задач:', error);
     } finally {
       setIsLoading(false);
     }
   };
 
-  // ... остальной код без изменений ...
-
   const columnStatuses = [
     "Без статуса",
-    "Нужно сделать", 
+    "Нужно сделать",
     "В работе",
     "Тестирование",
     "Готово"
@@ -74,10 +76,10 @@ export default function Main() { // Убираем onTaskCreated из пропс
       <MainContainer>
         <div className="container">
           <ErrorMessage>
-            {error}
-            <RetryButton onClick={loadTasks}>
-              Попробовать снова
-            </RetryButton>
+            Ошибка загрузки задач: {error}
+            <button onClick={loadTasks} style={{ marginLeft: '10px' }}>
+              Повторить
+            </button>
           </ErrorMessage>
         </div>
       </MainContainer>
