@@ -1,41 +1,68 @@
-import axios from 'axios';
+import axios from "axios";
 
-const API_URL = 'https://wedev-api.sky.pro/api/user';
+const USER_API_URL = "https://wedev-api.sky.pro/api/user";
 
-export async function login({ email, password }) {
+export async function login(userData) {
   try {
-    const response = await axios.post(`${API_URL}/login`, {
-      email,
-      password,
+    const response = await axios.post(`${USER_API_URL}/login`, userData, {
+      headers: {
+        "Content-Type": "",
+      },
     });
-    return response.data;
+
+    const user = response.data.user;
+    const token = user.token;
+
+    localStorage.setItem("authToken", token);
+    localStorage.setItem("userData", JSON.stringify(user));
+
+    return { user, token };
   } catch (error) {
-    throw new Error(error.response?.data?.error || 'Ошибка авторизации');
+    throw new Error(error.response?.data?.error || "Ошибка входа");
   }
 }
 
-export async function register({ name, email, password }) {
+export async function register(userData) {
   try {
-    const response = await axios.post(API_URL, {
-      name,
-      email,
-      password,
+    const response = await axios.post(USER_API_URL, userData, {
+      headers: {
+        "Content-Type": "",
+      },
     });
-    return response.data;
+
+    const user = response.data.user;
+    const token = user.token;
+
+    localStorage.setItem("authToken", token);
+    localStorage.setItem("userData", JSON.stringify(user));
+
+    return { user, token };
   } catch (error) {
-    throw new Error(error.response?.data?.error || 'Ошибка регистрации');
+    console.log(error);
+    throw new Error(error.response?.data?.error || "Ошибка регистрации");
   }
 }
 
-export async function getCurrentUser(token) {
+export function getToken() {
+  return localStorage.getItem("authToken");
+}
+
+export async function getCurrentUser() {
   try {
-    const response = await axios.get(`${API_URL}/me`, {
+    const token = getToken();
+    if (!token) {
+      throw new Error("Токен не найден");
+    }
+
+    const response = await axios.get(`${USER_API_URL}/me`, {
       headers: {
         Authorization: `Bearer ${token}`,
       },
     });
     return response.data;
   } catch (error) {
-    throw new Error(error.response?.data?.error || 'Ошибка получения данных пользователя');
+    throw new Error(
+      error.response?.data?.error || "Ошибка получения данных пользователя"
+    );
   }
 }
