@@ -14,7 +14,7 @@ export async function login(userData) {
     const token = user.token;
 
     localStorage.setItem("authToken", token);
-    localStorage.setItem("userData", JSON.stringify(user));
+    //localStorage.setItem("userData", JSON.stringify(user));
 
     return { user, token };
   } catch (error) {
@@ -34,7 +34,7 @@ export async function register(userData) {
     const token = user.token;
 
     localStorage.setItem("authToken", token);
-    localStorage.setItem("userData", JSON.stringify(user));
+    //localStorage.setItem("userData", JSON.stringify(user));
 
     return { user, token };
   } catch (error) {
@@ -47,22 +47,22 @@ export function getToken() {
   return localStorage.getItem("authToken");
 }
 
-export async function getCurrentUser() {
-  try {
-    const token = getToken();
-    if (!token) {
-      throw new Error("Токен не найден");
-    }
+// export async function getCurrentUser() {
+//   try {
+//     const token = getToken();
+//     if (!token) {
+//       throw new Error("Токен не найден");
+//     }
 
-    const response = await axios.get(`${USER_API_URL}/me`, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
-    return response.data;
-  } catch (error) {
-    throw new Error(
-      error.response?.data?.error || "Ошибка получения данных пользователя"
-    );
-  }
-}
+//     const response = await axios.get(`${USER_API_URL}/me`, {
+//       headers: {
+//         Authorization: `Bearer ${token}`,
+//       },
+//     });
+//     return response.data;
+//   } catch (error) {
+//     throw new Error(
+//       error.response?.data?.error || "Ошибка получения данных пользователя"
+//     );
+//   }
+// }

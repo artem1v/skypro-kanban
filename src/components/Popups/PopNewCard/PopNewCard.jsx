@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { tasksAPI } from '../../../api/tasks';
+
 import {
   PopNewCardContainer,
   PopNewCardBlock,
@@ -18,6 +18,7 @@ import {
   FormNewCreate,
   ErrorMessage
 } from './PopNewCard.styled';
+import { postCard } from '../../../api/tasks';
 
 export default function PopNewCard({ isOpen, onClose }) {
   const [formData, setFormData] = useState({
@@ -51,7 +52,7 @@ export default function PopNewCard({ isOpen, onClose }) {
     setLoading(true);
 
     try {
-      await tasksAPI.createTask(formData);
+      await postCard(formData);
       onClose();
       // Перезагружаем страницу чтобы обновить задачи
       window.location.reload();

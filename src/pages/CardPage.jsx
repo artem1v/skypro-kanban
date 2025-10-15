@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
-import { cardsData } from '../data';
 import {
   CardPageContainer,
   CardPageContent,
@@ -41,12 +40,16 @@ import {
   BtnDelete,
   BtnClose
 } from './CardPage.styled';
+import { fetchCards } from '../api/tasks';
 
 export default function CardPage() {
   const { id } = useParams();
   const navigate = useNavigate();
   const [task, setTask] = useState(null);
   const [isEditing, setIsEditing] = useState(false);
+
+  const cardsData = fetchCards();    
+
 
   useEffect(() => {
     const foundTask = cardsData.find(card => card.id === parseInt(id));

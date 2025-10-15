@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import Column from './Column/Column';
 import Loader from '../CardLoader/Loader';
 import CardLoader from '../CardLoader/CardLoader';
-import { getTasks } from '../../services/kanban';
 import {
   MainContainer,
   MainColumnsContainer,
@@ -11,6 +10,7 @@ import {
   ColumnTitle,
   ErrorMessage
 } from './Main.styled';
+import { fetchCards } from '../../api/tasks';
 
 export default function Main() {
   const [isLoading, setIsLoading] = useState(true);
@@ -29,7 +29,7 @@ export default function Main() {
       if (!token) {
         throw new Error('Токен авторизации не найден');
       }
-      const tasksData = await getTasks(token);
+      const tasksData = await fetchCards(token);
       setTasks(tasksData);
     } catch (error) {
       setError(error.message);
@@ -38,6 +38,8 @@ export default function Main() {
       setIsLoading(false);
     }
   };
+
+  console.log(tasks)
 
   const columnStatuses = [
     "Без статуса",
@@ -91,7 +93,7 @@ export default function Main() {
       <div className="container">
         <MainColumnsContainer>
           {columnStatuses.map((status) => {
-            const filteredTasks = tasks.filter(task => task.status === status);
+            const filteredTasks = tasks.tasks.filter(task => task.status === status);
             return (
               <MainColumnWrapper key={status}>
                 <Column 

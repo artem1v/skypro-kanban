@@ -1,81 +1,81 @@
-import React, { useState } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
-import { useAuth } from '../hooks/useAuth';
-import { 
-  LoginContainer, 
-  LoginForm, 
-  LoginTitle, 
-  LoginInput, 
-  LoginButton, 
+import React, { useState } from "react";
+import { useNavigate, Link } from "react-router-dom";
+import { useAuth } from "../hooks/useAuth";
+import {
+  LoginContainer,
+  LoginForm,
+  LoginTitle,
+  LoginInput,
+  LoginButton,
   ErrorMessage,
   LoginText,
-  LoginLink
-} from './LoginPage.styled';
+  LoginLink,
+} from "./LoginPage.styled";
+import { register } from "../api/auth";
 
 export default function RegisterPage() {
   const [formData, setFormData] = useState({
-    name: '',
-    email: '',
-    password: '',
-    confirmPassword: '',
+    name: "",
+    login: "",
+    password: "",
   });
   const [errors, setErrors] = useState({});
-  const { register, loading } = useAuth();
+  const { loading } = useAuth();
   const navigate = useNavigate();
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
-      [name]: value
+      [name]: value,
     }));
     if (errors[name]) {
-      setErrors(prev => ({
+      setErrors((prev) => ({
         ...prev,
-        [name]: ''
+        [name]: "",
       }));
     }
   };
 
   const validateForm = () => {
     const newErrors = {};
-    
+
     if (!formData.name.trim()) {
-      newErrors.name = 'Имя обязательно';
+      newErrors.name = "Имя обязательно";
     }
-    
-    if (!formData.email.trim()) {
-      newErrors.email = 'Email обязателен';
-    } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
-      newErrors.email = 'Некорректный email';
+
+    if (!formData.login.trim()) {
+      newErrors.login = "Email обязателен";
+    } else if (!/\S+@\S+\.\S+/.test(formData.login)) {
+      newErrors.login = "Некорректный email";
     }
-    
+
     if (!formData.password.trim()) {
-      newErrors.password = 'Пароль обязателен';
+      newErrors.password = "Пароль обязателен";
     } else if (formData.password.length < 6) {
-      newErrors.password = 'Пароль должен содержать минимум 6 символов';
+      newErrors.password = "Пароль должен содержать минимум 6 символов";
     }
-    
+
     if (!formData.confirmPassword.trim()) {
-      newErrors.confirmPassword = 'Подтверждение пароля обязательно';
+      newErrors.confirmPassword = "Подтверждение пароля обязательно";
     } else if (formData.password !== formData.confirmPassword) {
-      newErrors.confirmPassword = 'Пароли не совпадают';
+      newErrors.confirmPassword = "Пароли не совпадают";
     }
-    
+
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
+
     if (!validateForm()) {
       return;
     }
 
     try {
-      await register(formData.name, formData.email, formData.password);
-      navigate('/');
+      await register(formData);
+      navigate("/");
     } catch (error) {
       setErrors({ submit: error.message });
     }
@@ -85,14 +85,14 @@ export default function RegisterPage() {
     <LoginContainer>
       <LoginForm as="form" onSubmit={handleSubmit}>
         <LoginTitle>Регистрация</LoginTitle>
-        
+
         {errors.submit && <ErrorMessage>{errors.submit}</ErrorMessage>}
-        
+
         <div>
-          <LoginInput 
-            type="text" 
+          <LoginInput
+            type="text"
             name="name"
-            placeholder="Имя и фамилия" 
+            placeholder="Имя и фамилия"
             value={formData.name}
             onChange={handleChange}
             $error={!!errors.name}
@@ -100,12 +100,12 @@ export default function RegisterPage() {
           />
           {errors.name && <ErrorMessage>{errors.name}</ErrorMessage>}
         </div>
-        
+
         <div>
-          <LoginInput 
-            type="email" 
-            name="email"
-            placeholder="Email" 
+          <LoginInput
+            type="email"
+            name="login"
+            placeholder="Email"
             value={formData.email}
             onChange={handleChange}
             $error={!!errors.email}
@@ -113,12 +113,12 @@ export default function RegisterPage() {
           />
           {errors.email && <ErrorMessage>{errors.email}</ErrorMessage>}
         </div>
-        
+
         <div>
-          <LoginInput 
-            type="password" 
+          <LoginInput
+            type="password"
             name="password"
-            placeholder="Пароль" 
+            placeholder="Пароль"
             value={formData.password}
             onChange={handleChange}
             $error={!!errors.password}
@@ -126,26 +126,31 @@ export default function RegisterPage() {
           />
           {errors.password && <ErrorMessage>{errors.password}</ErrorMessage>}
         </div>
-        
+
         <div>
-          <LoginInput 
-            type="password" 
+          <LoginInput
+            type="password"
             name="confirmPassword"
-            placeholder="Подтвердите пароль" 
+            placeholder="Подтвердите пароль"
             value={formData.confirmPassword}
             onChange={handleChange}
             $error={!!errors.confirmPassword}
             required
           />
-          {errors.confirmPassword && <ErrorMessage>{errors.confirmPassword}</ErrorMessage>}
+          {errors.confirmPassword && (
+            <ErrorMessage>{errors.confirmPassword}</ErrorMessage>
+          )}
         </div>
-        
+
         <LoginButton type="submit" disabled={loading}>
-          {loading ? 'Загрузка...' : 'Зарегистрироваться'}
+          {loading ? "Загрузка..." : "Зарегистрироваться"}
         </LoginButton>
-        
+
         <LoginText>
-          Уже есть аккаунт? <LoginLink as={Link} to="/login">Войти</LoginLink>
+          Уже есть аккаунт?{" "}
+          <LoginLink as={Link} to="/login">
+            Войти
+          </LoginLink>
         </LoginText>
       </LoginForm>
     </LoginContainer>
