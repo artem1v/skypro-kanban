@@ -137,11 +137,12 @@ export const FormBrowseLabel = styled.label`
 export const FormBrowseTextarea = styled.textarea`
   width: 100%;
   padding: 12px;
-  border: 1px solid #EAEEF6;
+  border: 1px solid ${props => props.readOnly ? '#EAEEF6' : '#565EEF'};
   border-radius: 8px;
   font-size: 14px;
   resize: vertical;
   min-height: 120px;
+  background: ${props => props.readOnly ? '#F8F9FA' : 'white'};
   
   &:focus {
     outline: none;
@@ -149,7 +150,6 @@ export const FormBrowseTextarea = styled.textarea`
   }
   
   &[readonly] {
-    background: #F8F9FA;
     cursor: not-allowed;
   }
 `;
@@ -349,5 +349,68 @@ export const BtnClose = styled.a`
   
   &:hover {
     background: #3d44b3;
+  }
+`;
+
+
+
+//Новые стили
+export const LoadingMessage = styled.div`
+  text-align: center;
+  padding: 40px;
+  color: #94A6BE;
+  font-size: 16px;
+`;
+
+export const ErrorMessage = styled.div`
+  background: #fff2f0;
+  border: 1px solid #ffccc7;
+  color: #ff4d4f;
+  padding: 16px;
+  border-radius: 6px;
+  margin-bottom: 20px;
+  text-align: center;
+`;
+
+export const EditInput = styled.input`
+  width: 100%;
+  padding: 12px 16px;
+  border: 1px solid #565EEF;
+  border-radius: 6px;
+  font-size: 28px;
+  font-weight: 600;
+  margin-bottom: 20px;
+  
+  &:focus {
+    outline: none;
+    border-color: #3d44b3;
+  }
+`;
+
+export const EditSelect = styled.select`
+  padding: 8px 12px;
+  border: 1px solid #565EEF;
+  border-radius: 6px;
+  font-size: 14px;
+  background: white;
+  
+  &:focus {
+    outline: none;
+    border-color: #3d44b3;
+  }
+`;
+
+export const EditTextarea = styled.textarea`
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #565EEF;
+  border-radius: 8px;
+  font-size: 14px;
+  resize: vertical;
+  min-height: 120px;
+  
+  &:focus {
+    outline: none;
+    border-color: #3d44b3;
   }
 `;
