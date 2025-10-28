@@ -1,64 +1,37 @@
+// src/components/Main/Card/Card.jsx
 import React from 'react';
-import { useNavigate } from 'react-router-dom';
-import {
-  CardItem,
-  CardContainer,
-  CardGroup,
-  CardTheme,
-  CardButton,
-  CardContent,
-  CardTitle,
+import { 
+  CardContainer, 
+  CardTitle, 
+  CardDescription, 
+  CardFooter,
+  CardStatus,
   CardDate
 } from './Card.styled';
 
-export default function Card({ title, topic, date, theme, task }) {
-  const navigate = useNavigate();
-
-  const handleCardClick = () => {
-    console.log('Карточка нажата:', task);
-    if (task && task._id) {
-      navigate(`/card/${task._id}`);
-    } else if (task && task.id) {
-      navigate(`/card/${task.id}`);
-    } else {
-      console.error('У задачи нет ID:', task);
-    }
-  };
-
-  const handleButtonClick = (e) => {
-    e.stopPropagation();
-    console.log('Кнопка нажата:', task);
-    if (task && task._id) {
-      navigate(`/card/${task._id}`);
-    } else if (task && task.id) {
-      navigate(`/card/${task.id}`);
-    }
+const Card = ({ task, onClick }) => {
+  const formatDate = (dateString) => {
+    if (!dateString) return '';
+    const date = new Date(dateString);
+    return date.toLocaleDateString('ru-RU');
   };
 
   return (
-    <CardItem onClick={handleCardClick}>
-      <CardContainer>
-        <CardGroup>
-          <CardTheme $theme={theme}>
-            <p>{topic}</p>
-          </CardTheme>
-          <CardButton onClick={handleButtonClick}>
-            <div></div>
-            <div></div>
-            <div></div>
-          </CardButton>
-        </CardGroup>
-        <CardContent>
-          <CardTitle>{title}</CardTitle>
-          <CardDate>
-            <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 13 13" fill="none">
-              <path d="M10.5625 2.03125H2.4375C1.7644 2.03125 1.21875 2.5769 1.21875 3.25V10.5625C1.21875 11.2356 1.7644 11.7812 2.4375 11.7812H10.5625C11.2356 11.7812 11.7812 11.2356 11.7812 10.5625V3.25C11.7812 2.5769 11.2356 2.03125 10.5625 2.03125Z" stroke="#94A6BE" strokeWidth="0.8" strokeLinejoin="round"/>
-              <path d="M11.7812 4.0625H1.21875M3.25 1.21875V2.03125V1.21875ZM9.75 1.21875V2.03125V1.21875Z" stroke="#94A6BE" strokeWidth="0.8" strokeLinecap="round" strokeLinejoin="round"/>
-            </svg>
-            <p>{date}</p>
-          </CardDate>
-        </CardContent>
-      </CardContainer>
-    </CardItem>
+    <CardContainer onClick={onClick}>
+      <CardTitle>{task.title}</CardTitle>
+      
+      {task.description && (
+        <CardDescription>{task.description}</CardDescription>
+      )}
+      
+      <CardFooter>
+        <CardStatus>{task.status}</CardStatus>
+        {task.date && (
+          <CardDate>{formatDate(task.date)}</CardDate>
+        )}
+      </CardFooter>
+    </CardContainer>
   );
-}
+};
+
+export default Card;

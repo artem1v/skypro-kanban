@@ -1,20 +1,16 @@
-import styled from 'styled-components';
+import styled from "styled-components";
 
 export const ColumnContainer = styled.div`
- 
-  border-radius: 12px;
-  
   height: fit-content;
   overflow-y: auto;
   min-height: 300px;
+  width: 220px; /* Убедись, что контейнер занимает всю доступную ширину */
 `;
-
 
 export const ColumnTitle = styled.div`
   font-weight: 700;
   font-size: 18px;
-  color:#94A6BE;
-;
+  color: #94a6be;
   padding-bottom: 16px;
   text-transform: uppercase;
   letter-spacing: 0.5px;
@@ -29,18 +25,18 @@ export const ColumnTitle = styled.div`
 export const CardsContainer = styled.div`
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: 10px;
 `;
 
 export const EmptyColumn = styled.div`
   text-align: center;
   padding: 60px 20px;
-  color: #94A6BE;
+  color: #94a6be;
   font-size: 14px;
-  background: #F8F9FA;
+  background: #f8f9fa;
   border-radius: 8px;
-  border: 2px dashed #DEE2E6;
-  
+  border: 2px dashed #dee2e6;
+
   p {
     margin: 0;
     font-style: italic;

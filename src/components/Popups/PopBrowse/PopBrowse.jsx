@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+// src/components/Popups/PopBrowse/PopBrowse.jsx
+import React, { useState, useEffect } from 'react';
 import {
   PopBrowseContainer,
   PopBrowseBlock,
@@ -42,35 +43,128 @@ import {
   PopBrowseBtnEdit,
   BtnEditSave,
   BtnEditCancel,
-  BtnEditDelete
+  BtnEditDelete,
+  FormNewInput
 } from './PopBrowse.styled';
 
-export default function PopBrowse({ isOpen, onClose, task }) {
+export default function PopBrowse({ isOpen, onClose, task, onSave, onDelete }) {
   const [isEditing, setIsEditing] = useState(false);
+  const [editedTask, setEditedTask] = useState(null);
+  const [selectedDate, setSelectedDate] = useState('');
 
-  if (!isOpen) return null;
+  useEffect(() => {
+    if (task) {
+      setEditedTask(task);
+      setSelectedDate(task.date || new Date().toLocaleDateString('ru-RU'));
+    }
+  }, [task]);
 
-  // Используем переданную задачу или заглушку
-  const currentTask = task || {
-    id: 1,
-    title: 'Название задачи',
-    description: 'Описание задачи...',
-    topic: 'Web Design',
-    theme: 'orange',
-    date: '09.09.23',
-    status: 'В работе'
-  };
+  if (!isOpen || !editedTask) return null;
 
   const statuses = ['Без статуса', 'Нужно сделать', 'В работе', 'Тестирование', 'Готово'];
+
+  // Функции для календаря
+  const getCurrentMonthYear = () => {
+    return new Date().toLocaleDateString('ru-RU', { 
+      month: 'long', 
+      year: 'numeric' 
+    });
+  };
+
+  const getDaysInMonth = () => {
+    const date = new Date();
+    const year = date.getFullYear();
+    const month = date.getMonth();
+    const firstDay = new Date(year, month, 1);
+    const lastDay = new Date(year, month + 1, 0);
+    
+    const days = [];
+    const startDay = firstDay.getDay() === 0 ? 6 : firstDay.getDay() - 1;
+    
+    for (let i = 0; i < startDay; i++) {
+      days.push(null);
+    }
+    
+    for (let i = 1; i <= lastDay.getDate(); i++) {
+      days.push(i);
+    }
+    
+    return days;
+  };
+
+  const handleDateSelect = (day) => {
+    if (day && isEditing) {
+      const currentDate = new Date();
+      const newDate = new Date(currentDate.getFullYear(), currentDate.getMonth(), day);
+      const formattedDate = newDate.toLocaleDateString('ru-RU');
+      setSelectedDate(formattedDate);
+      setEditedTask(prev => ({ ...prev, date: formattedDate }));
+    }
+  };
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setEditedTask(prev => ({
+      ...prev,
+      [name]: value
+    }));
+  };
+
+  const handleCategoryChange = (categoryName) => {
+    if (isEditing) {
+      setEditedTask(prev => ({
+        ...prev,
+        topic: categoryName
+      }));
+    }
+  };
+
+  const handleSave = async () => {
+    try {
+      if (onSave) {
+        await onSave(editedTask.id, editedTask);
+      }
+      setIsEditing(false);
+    } catch (error) {
+      console.error('Ошибка при сохранении:', error);
+    }
+  };
+
+  const handleDelete = async () => {
+    if (window.confirm('Вы уверены, что хотите удалить эту задачу?')) {
+      try {
+        if (onDelete) {
+          await onDelete(editedTask.id);
+          onClose();
+        }
+      } catch (error) {
+        console.error('Ошибка при удалении:', error);
+      }
+    }
+  };
+
+  const days = getDaysInMonth();
+  const currentDay = new Date().getDate();
+  const selectedDay = selectedDate ? parseInt(selectedDate.split('.')[0]) : null;
 
   return (
     <PopBrowseContainer id="popBrowse">
       <PopBrowseBlock>
         <PopBrowseContent>
           <PopBrowseTopBlock>
-            <PopBrowseTitle>{currentTask.title}</PopBrowseTitle>
-            <ThemeTop className={`_${currentTask.theme} _active-category`}>
-              <p className={`_${currentTask.theme}`}>{currentTask.topic}</p>
+            {isEditing ? (
+              <FormNewInput
+                type="text"
+                name="title"
+                value={editedTask.title}
+                onChange={handleInputChange}
+                style={{ fontSize: '24px', fontWeight: 'bold', marginBottom: '20px' }}
+              />
+            ) : (
+              <PopBrowseTitle>{editedTask.title}</PopBrowseTitle>
+            )}
+            <ThemeTop className={`_orange _active-category`}>
+              <p>{editedTask.topic}</p>
             </ThemeTop>
           </PopBrowseTopBlock>
 
@@ -80,11 +174,17 @@ export default function PopBrowse({ isOpen, onClose, task }) {
               {statuses.map((status) => (
                 <StatusTheme
                   key={status}
-                  className={currentTask.status === status ? '_active' : '_hide'}
+                  className={`${editedTask.status === status ? '_active' : ''} ${isEditing ? '' : '_hide'}`}
+                  onClick={() => isEditing && setEditedTask(prev => ({ ...prev, status }))}
                 >
                   <p>{status}</p>
                 </StatusTheme>
               ))}
+              {!isEditing && (
+                <StatusTheme className="_active">
+                  <p>{editedTask.status}</p>
+                </StatusTheme>
+              )}
             </StatusThemes>
           </PopBrowseStatus>
 
@@ -94,8 +194,10 @@ export default function PopBrowse({ isOpen, onClose, task }) {
                 <FormBrowseLabel htmlFor="textArea01">Описание задачи</FormBrowseLabel>
                 <FormBrowseTextarea
                   id="textArea01"
+                  name="description"
                   readOnly={!isEditing}
-                  value={currentTask.description}
+                  value={editedTask.description}
+                  onChange={handleInputChange}
                   placeholder="Введите описание задачи..."
                 />
               </FormBrowseBlock>
@@ -105,10 +207,10 @@ export default function PopBrowse({ isOpen, onClose, task }) {
               <CalendarTitle>Даты</CalendarTitle>
               <CalendarBlock>
                 <CalendarNav>
-                  <CalendarMonth>Сентябрь 2023</CalendarMonth>
+                  <CalendarMonth>{getCurrentMonthYear()}</CalendarMonth>
                   <NavActions>
-                    <NavAction data-action="prev">←</NavAction>
-                    <NavAction data-action="next">→</NavAction>
+                    <NavAction>←</NavAction>
+                    <NavAction>→</NavAction>
                   </NavActions>
                 </CalendarNav>
                 
@@ -124,12 +226,13 @@ export default function PopBrowse({ isOpen, onClose, task }) {
                   </CalendarDaysNames>
                   
                   <CalendarCells>
-                    {[...Array(35)].map((_, index) => (
+                    {days.map((day, index) => (
                       <CalendarCell
                         key={index}
-                        className={index === 8 ? '_current _active-day' : ''}
+                        className={`${day === currentDay ? '_current' : ''} ${day === selectedDay ? '_active-day' : ''} ${!day ? '_empty' : ''} ${isEditing ? '_editable' : ''}`}
+                        onClick={() => handleDateSelect(day)}
                       >
-                        {index + 1}
+                        {day}
                       </CalendarCell>
                     ))}
                   </CalendarCells>
@@ -137,7 +240,7 @@ export default function PopBrowse({ isOpen, onClose, task }) {
                 
                 <CalendarPeriod>
                   <CalendarText>
-                    Срок исполнения: <DateControl>{currentTask.date}</DateControl>
+                    Срок исполнения: <DateControl>{selectedDate}</DateControl>
                   </CalendarText>
                 </CalendarPeriod>
               </CalendarBlock>
@@ -147,8 +250,23 @@ export default function PopBrowse({ isOpen, onClose, task }) {
           <ThemeDown>
             <ThemeDownCategories>
               <CategoriesTitle>Категория</CategoriesTitle>
-              <CategoriesTheme className={`_${currentTask.theme} _active-category`}>
-                <p className={`_${currentTask.theme}`}>{currentTask.topic}</p>
+              <CategoriesTheme 
+                className={`_orange _active-category ${isEditing ? '_editable' : ''}`}
+                onClick={() => handleCategoryChange('Web Design')}
+              >
+                <p>Web Design</p>
+              </CategoriesTheme>
+              <CategoriesTheme 
+                className={`_green ${editedTask.topic === 'Research' ? '_active-category' : ''} ${isEditing ? '_editable' : ''}`}
+                onClick={() => handleCategoryChange('Research')}
+              >
+                <p>Research</p>
+              </CategoriesTheme>
+              <CategoriesTheme 
+                className={`_purple ${editedTask.topic === 'Copywriting' ? '_active-category' : ''} ${isEditing ? '_editable' : ''}`}
+                onClick={() => handleCategoryChange('Copywriting')}
+              >
+                <p>Copywriting</p>
               </CategoriesTheme>
             </ThemeDownCategories>
           </ThemeDown>
@@ -159,7 +277,7 @@ export default function PopBrowse({ isOpen, onClose, task }) {
                 <BtnBrowseEdit onClick={() => setIsEditing(true)}>
                   Редактировать задачу
                 </BtnBrowseEdit>
-                <BtnBrowseDelete>
+                <BtnBrowseDelete onClick={handleDelete}>
                   Удалить задачу
                 </BtnBrowseDelete>
               </BtnGroup>
@@ -170,13 +288,13 @@ export default function PopBrowse({ isOpen, onClose, task }) {
           ) : (
             <PopBrowseBtnEdit>
               <BtnGroup>
-                <BtnEditSave>
+                <BtnEditSave onClick={handleSave}>
                   Сохранить
                 </BtnEditSave>
                 <BtnEditCancel onClick={() => setIsEditing(false)}>
                   Отменить
                 </BtnEditCancel>
-                <BtnEditDelete>
+                <BtnEditDelete onClick={handleDelete}>
                   Удалить задачу
                 </BtnEditDelete>
               </BtnGroup>

@@ -38,7 +38,7 @@ export default function Header({ onNewCardOpen, onOpenExit }) {
             <HeaderUser 
               onClick={() => setIsUserPopupOpen(!isUserPopupOpen)}
             >
-              {user?.name || 'Пользователь'}
+              {user?.email || user?.login || 'Пользователь'}
             </HeaderUser>
             <PopUser 
               isOpen={isUserPopupOpen} 

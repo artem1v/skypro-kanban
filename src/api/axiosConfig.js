@@ -7,9 +7,9 @@ const API_BASE_URL = 'https://webdev-hw-api.vercel.app/api/v2';
 export const apiClient = axios.create({
   baseURL: API_BASE_URL,
   timeout: 10000,
-  headers: {
+ /* headers: {
     'Content-Type': 'application/json',
-  },
+  },*/
 });
 
 // Интерсептор для добавления токена к каждому запросу

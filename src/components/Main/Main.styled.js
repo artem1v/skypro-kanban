@@ -1,8 +1,8 @@
 import styled from 'styled-components';
 
 export const MainContainer = styled.main`
-  margin-top: 100px;
-  padding: 32px 0;
+  margin-top: 65px;
+  padding: 40px 0;
   min-height: calc(100vh - 100px);
   background: #F5F7FA;
 `;
@@ -109,4 +109,37 @@ export const WarningMessage = styled.div`
   border-radius: 6px;
   text-align: center;
   margin: 20px 0;
+`;
+
+export const KanbanBoard = styled.div`
+     display: flex;
+    gap: 20px;
+    margin-left: 135px;
+`;
+
+export const AddTaskButton = styled.button`
+  background: #565eef;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 12px 24px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.2s;
+
+  &:hover {
+    background: #4a52d4;
+  }
+
+  &:active {
+    background: #3f46b8;
+  }
+`;
+
+export const LoadingMessage = styled.div`
+  text-align: center;
+  padding: 40px;
+  font-size: 18px;
+  color: #666;
 `;

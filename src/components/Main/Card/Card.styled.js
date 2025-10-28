@@ -1,7 +1,6 @@
 import styled from 'styled-components';
 
 export const CardItem = styled.div`
-  margin-bottom: 20px;
   cursor: pointer; // Добавляем курсор-указатель
   
   &:hover {
@@ -17,9 +16,9 @@ export const CardContainer = styled.div`
   border: 1px solid #EAEEF6;
   transition: all 0.2s ease;
   width: 220px;
-  height: 130px;
+  height: 140px;
   opacity: 1;
-  border-radius: 10px;
+  
 
 
   &:hover {
@@ -105,7 +104,7 @@ export const CardTitle = styled.h3`
   font-size: 16px;
   line-height: 1.4;
   color: #000000;
-  margin-bottom: 12px;
+  margin-bottom: 35px;
   word-break: break-word;
 `;
 
@@ -127,3 +126,34 @@ export const CardDate = styled.div`
     font-weight: 500;
   }
 `;
+
+
+// src/components/Main/Card/Card.styled.js
+
+export const CardDescription = styled.p`
+  font-size: 12px;
+  color: #94A6BE;
+  margin: 0 0 12px 0;
+  line-height: 1.4;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+`;
+
+export const CardFooter = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+`;
+
+export const CardStatus = styled.span`
+  font-size: 10px;
+  color: #94A6BE;
+  background: #F8F9FA;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-weight: 400;
+`;
+

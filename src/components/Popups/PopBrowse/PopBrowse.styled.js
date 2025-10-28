@@ -386,3 +386,25 @@ export const BtnEditDelete = styled.button`
     color: white;
   }
 `;
+
+//Новый код
+
+// Добавь в конец файла PopBrowse.styled.js
+export const FormNewInput = styled.input`
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #EAEEF6;
+  border-radius: 8px;
+  font-size: 14px;
+  font-family: inherit;
+  
+  &:focus {
+    outline: none;
+    border-color: #565EEF;
+  }
+  
+  &[readonly] {
+    background: #F8F9FA;
+    cursor: not-allowed;
+  }
+`;

@@ -12,9 +12,9 @@ export async function login(userData) {
 
     const user = response.data.user;
     const token = user.token;
-
+    console.log(user)
     localStorage.setItem("authToken", token);
-    //localStorage.setItem("userData", JSON.stringify(user));
+    localStorage.setItem("userData", JSON.stringify(user));
 
     return { user, token };
   } catch (error) {
@@ -32,9 +32,9 @@ export async function register(userData) {
 
     const user = response.data.user;
     const token = user.token;
-
+    console.log(user)
     localStorage.setItem("authToken", token);
-    //localStorage.setItem("userData", JSON.stringify(user));
+    localStorage.setItem("userData", JSON.stringify(user));
 
     return { user, token };
   } catch (error) {

@@ -25,7 +25,7 @@ export function useAuth() {
       setError('');
       setLoading(true);
       const data = await apiLogin({ email, password });
-      
+      console.log("Новый токен после логина:", data.token); // <<--- ДОБАВЬ ЭТО
       localStorage.setItem('authToken', data.token);
       localStorage.setItem('userData', JSON.stringify(data.user));
       
@@ -46,7 +46,7 @@ export function useAuth() {
       setError('');
       setLoading(true);
       const data = await apiRegister({ name, email, password });
-      
+      console.log("Новый токен после логина:", data.token); // <<--- ДОБАВЬ ЭТО
       localStorage.setItem('authToken', data.token);
       localStorage.setItem('userData', JSON.stringify(data.user));
       

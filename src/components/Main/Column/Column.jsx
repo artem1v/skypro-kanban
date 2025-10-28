@@ -1,52 +1,57 @@
+// src/components/Main/Column/Column.jsx
 import React from 'react';
 import Card from '../Card/Card';
-import {
-  ColumnContainer,
-  ColumnTitle,
-  CardsContainer,
-  EmptyColumn
+import CardLoader from '../../CardLoader/CardLoader';
+import { 
+  ColumnContainer, 
+  ColumnTitle, 
+  CardsContainer, // Используем существующий CardsContainer вместо TasksList
+  EmptyColumn 
 } from './Column.styled';
 
-export default function Column({ title, tasks, isEmpty }) {
-  console.log(`Колонка "${title}":`, tasks);
+const Column = ({ 
+  column, 
+  tasks, 
+  loading = false,
+  onTaskClick 
+}) => {
+  const columnTasks = tasks.filter(task => task.status === column.status);
 
   return (
     <ColumnContainer>
       <ColumnTitle>
-        <p>{title}</p>
+        {column.title} 
+        <span style={{ color: '#666', marginLeft: '8px' }}>
+          ({columnTasks.length})
+        </span>
       </ColumnTitle>
-      <CardsContainer>
-        {isEmpty ? (
-          <EmptyColumn>
-            <p>Нет задач</p>
-          </EmptyColumn>
+      
+      <CardsContainer> {/* Используем CardsContainer вместо TasksList */}
+        {loading ? (
+          Array.from({ length: 3 }).map((_, index) => (
+            <CardLoader key={index} />
+          ))
         ) : (
-          tasks.map((task) => (
+          columnTasks.map(task => (
             <Card
-              key={task._id || task.id}
-              title={task.title}
-              topic={task.topic}
-              date={task.date}
-              theme={getThemeByTopic(task.topic)}
-              task={task} // Передаем всю задачу с ID
+              key={task.id}
+              task={task}
+              onClick={() => onTaskClick(task)}
             />
           ))
+        )}
+        
+        {!loading && columnTasks.length === 0 && (
+          <EmptyColumn> {/* Используем EmptyColumn для пустого состояния */}
+            <p>Нет задач</p>
+          </EmptyColumn>
         )}
       </CardsContainer>
     </ColumnContainer>
   );
-}
+};
 
-// Вспомогательная функция для определения темы по topic
-function getThemeByTopic(topic) {
-  const themeMap = {
-    'Web Design': 'orange',
-    'Research': 'green',
-    'Copywriting': 'purple'
-  };
-  
-  return themeMap[topic] || 'orange';
-}
+export default Column;
 
 
 
