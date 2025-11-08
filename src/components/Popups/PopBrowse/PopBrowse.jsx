@@ -1,310 +1,214 @@
-// src/components/Popups/PopBrowse/PopBrowse.jsx
-import React, { useState, useEffect } from 'react';
-import {
-  PopBrowseContainer,
-  PopBrowseBlock,
-  PopBrowseContent,
-  PopBrowseTopBlock,
-  PopBrowseTitle,
-  ThemeTop,
-  PopBrowseStatus,
-  StatusTitle,
-  StatusThemes,
-  StatusTheme,
-  PopBrowseWrap,
-  PopBrowseForm,
-  FormBrowseBlock,
-  FormBrowseLabel,
-  FormBrowseTextarea,
-  PopBrowseCalendar,
-  CalendarTitle,
-  CalendarBlock,
-  CalendarNav,
-  CalendarMonth,
-  NavActions,
-  NavAction,
-  CalendarContent,
-  CalendarDaysNames,
-  CalendarDayName,
-  CalendarCells,
-  CalendarCell,
-  CalendarPeriod,
-  CalendarText,
-  DateControl,
-  ThemeDown,
-  ThemeDownCategories,
-  CategoriesTitle,
-  CategoriesTheme,
-  PopBrowseBtnBrowse,
-  BtnGroup,
-  BtnBrowseEdit,
-  BtnBrowseDelete,
-  BtnBrowseClose,
-  PopBrowseBtnEdit,
-  BtnEditSave,
-  BtnEditCancel,
-  BtnEditDelete,
-  FormNewInput
-} from './PopBrowse.styled';
+import { useContext, useEffect, useState } from 'react'
+import { CardContext } from '../../../context/CardContext'
+import { topicMapping } from '../../../data'
+import { Calendar } from '../../Calendar/Calendar'
+import ButtonWithLoader from '../../Loaders/ButtonWithLoader'
+import * as S from './PopBrowse.styled'
 
-export default function PopBrowse({ isOpen, onClose, task, onSave, onDelete }) {
-  const [isEditing, setIsEditing] = useState(false);
-  const [editedTask, setEditedTask] = useState(null);
-  const [selectedDate, setSelectedDate] = useState('');
+const STATUSES = [
+	'Без статуса',
+	'Нужно сделать',
+	'В работе',
+	'Тестирование',
+	'Готово',
+]
 
-  useEffect(() => {
-    if (task) {
-      setEditedTask(task);
-      setSelectedDate(task.date || new Date().toLocaleDateString('ru-RU'));
-    }
-  }, [task]);
+export default function PopBrowse({ loading, error, card, onClose }) {
+	const { editTask, deleteTask } = useContext(CardContext)
+	const [isEditing, setIsEditing] = useState(false)
+	const [editedCard, setEditedCard] = useState(null)
+	const [isSaving, setIsSaving] = useState(false)
+	const [isDeleting, setIsDeleting] = useState(false)
 
-  if (!isOpen || !editedTask) return null;
+	useEffect(() => {
+		if (card) {
+			setEditedCard({
+				...card,
+				date: card.date || new Date().toISOString(),
+			})
+		}
+	}, [card])
 
-  const statuses = ['Без статуса', 'Нужно сделать', 'В работе', 'Тестирование', 'Готово'];
+	const handleEdit = () => setIsEditing(true)
 
-  // Функции для календаря
-  const getCurrentMonthYear = () => {
-    return new Date().toLocaleDateString('ru-RU', { 
-      month: 'long', 
-      year: 'numeric' 
-    });
-  };
+	const handleCancel = () => {
+		setEditedCard(card)
+		setIsEditing(false)
+	}
 
-  const getDaysInMonth = () => {
-    const date = new Date();
-    const year = date.getFullYear();
-    const month = date.getMonth();
-    const firstDay = new Date(year, month, 1);
-    const lastDay = new Date(year, month + 1, 0);
-    
-    const days = [];
-    const startDay = firstDay.getDay() === 0 ? 6 : firstDay.getDay() - 1;
-    
-    for (let i = 0; i < startDay; i++) {
-      days.push(null);
-    }
-    
-    for (let i = 1; i <= lastDay.getDate(); i++) {
-      days.push(i);
-    }
-    
-    return days;
-  };
+	const handleSave = async () => {
+		setIsSaving(true)
+		try {
+			await editTask(card._id, editedCard)
+			setIsEditing(false)
+		} catch (error) {
+			console.error('Ошибка при сохранении:', error.message)
+		} finally {
+			setIsSaving(false)
+		}
+	}
 
-  const handleDateSelect = (day) => {
-    if (day && isEditing) {
-      const currentDate = new Date();
-      const newDate = new Date(currentDate.getFullYear(), currentDate.getMonth(), day);
-      const formattedDate = newDate.toLocaleDateString('ru-RU');
-      setSelectedDate(formattedDate);
-      setEditedTask(prev => ({ ...prev, date: formattedDate }));
-    }
-  };
+	const handleDelete = async () => {
+		setIsDeleting(true)
+		try {
+			await deleteTask(card._id)
+			onClose()
+		} catch (error) {
+			console.error('Ошибка при удалении:', error.message)
+		} finally {
+			setIsDeleting(false)
+		}
+	}
 
-  const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    setEditedTask(prev => ({
-      ...prev,
-      [name]: value
-    }));
-  };
+	const handleInputChange = e => {
+		const { name, value } = e.target
+		setEditedCard(prev => ({ ...prev, [name]: value }))
+	}
 
-  const handleCategoryChange = (categoryName) => {
-    if (isEditing) {
-      setEditedTask(prev => ({
-        ...prev,
-        topic: categoryName
-      }));
-    }
-  };
+	const handleStatusChange = status => {
+		setEditedCard(prev => ({ ...prev, status }))
+	}
 
-  const handleSave = async () => {
-    try {
-      if (onSave) {
-        await onSave(editedTask.id, editedTask);
-      }
-      setIsEditing(false);
-    } catch (error) {
-      console.error('Ошибка при сохранении:', error);
-    }
-  };
+	if (loading || !editedCard) {
+		return (
+			<S.PopBrowse>
+				<S.PopBrowseContainer onClick={onClose}>
+					<S.PopBrowseBlock onClick={e => e.stopPropagation()}>
+						<S.PopBrowseContent>
+							<S.LoadingMessage>Загрузка карточки...</S.LoadingMessage>
+						</S.PopBrowseContent>
+					</S.PopBrowseBlock>
+				</S.PopBrowseContainer>
+			</S.PopBrowse>
+		)
+	}
 
-  const handleDelete = async () => {
-    if (window.confirm('Вы уверены, что хотите удалить эту задачу?')) {
-      try {
-        if (onDelete) {
-          await onDelete(editedTask.id);
-          onClose();
-        }
-      } catch (error) {
-        console.error('Ошибка при удалении:', error);
-      }
-    }
-  };
+	if (error) {
+		return (
+			<S.PopBrowse>
+				<S.PopBrowseContainer onClick={onClose}>
+					<S.PopBrowseBlock onClick={e => e.stopPropagation()}>
+						<S.PopBrowseContent>
+							<S.ErrorMessage>Ошибка: {error}</S.ErrorMessage>
+						</S.PopBrowseContent>
+					</S.PopBrowseBlock>
+				</S.PopBrowseContainer>
+			</S.PopBrowse>
+		)
+	}
 
-  const days = getDaysInMonth();
-  const currentDay = new Date().getDate();
-  const selectedDay = selectedDate ? parseInt(selectedDate.split('.')[0]) : null;
+	return (
+		<S.PopBrowse>
+			<S.PopBrowseContainer onClick={onClose}>
+				<S.PopBrowseBlock onClick={e => e.stopPropagation()}>
+					<S.PopBrowseContent>
+						<S.PopBrowseTopBlock>
+							<S.PopBrowseTtl>
+								{editedCard?.title || 'Название задачи'}
+							</S.PopBrowseTtl>
+							<S.ThemeBlock
+								$themeColor={topicMapping[editedCard?.topic] || 'Цвет задачи'}
+								$isActive
+							>
+								{editedCard?.topic || 'Статус задачи'}
+							</S.ThemeBlock>
+						</S.PopBrowseTopBlock>
 
-  return (
-    <PopBrowseContainer id="popBrowse">
-      <PopBrowseBlock>
-        <PopBrowseContent>
-          <PopBrowseTopBlock>
-            {isEditing ? (
-              <FormNewInput
-                type="text"
-                name="title"
-                value={editedTask.title}
-                onChange={handleInputChange}
-                style={{ fontSize: '24px', fontWeight: 'bold', marginBottom: '20px' }}
-              />
-            ) : (
-              <PopBrowseTitle>{editedTask.title}</PopBrowseTitle>
-            )}
-            <ThemeTop className={`_orange _active-category`}>
-              <p>{editedTask.topic}</p>
-            </ThemeTop>
-          </PopBrowseTopBlock>
+						<S.StatusBlock>
+							<S.StatusTitle>Статус</S.StatusTitle>
+							<S.StatusThemes>
+								{isEditing ? (
+									STATUSES.map(status => (
+										<S.ThemeBlock
+											key={status}
+											$themeColor={
+												status === editedCard.status ? 'gray' : 'default'
+											}
+											$isActive={status === editedCard.status}
+											onClick={() => handleStatusChange(status)}
+										>
+											{status}
+										</S.ThemeBlock>
+									))
+								) : (
+									<S.ThemeBlock $themeColor='gray' $isActive>
+										{editedCard.status}
+									</S.ThemeBlock>
+								)}
+							</S.StatusThemes>
+						</S.StatusBlock>
 
-          <PopBrowseStatus>
-            <StatusTitle>Статус</StatusTitle>
-            <StatusThemes>
-              {statuses.map((status) => (
-                <StatusTheme
-                  key={status}
-                  className={`${editedTask.status === status ? '_active' : ''} ${isEditing ? '' : '_hide'}`}
-                  onClick={() => isEditing && setEditedTask(prev => ({ ...prev, status }))}
-                >
-                  <p>{status}</p>
-                </StatusTheme>
-              ))}
-              {!isEditing && (
-                <StatusTheme className="_active">
-                  <p>{editedTask.status}</p>
-                </StatusTheme>
-              )}
-            </StatusThemes>
-          </PopBrowseStatus>
+						<S.PopBrowseWrap>
+							<S.PopBrowseForm onSubmit={e => e.preventDefault()}>
+								<S.BrowseFormBlock>
+									<S.BrowseFormLabel htmlFor='textArea01'>
+										Описание задачи
+									</S.BrowseFormLabel>
+									<S.BrowseFormArea
+										name='description'
+										id='textArea01'
+										value={editedCard.description || ''}
+										onChange={handleInputChange}
+										readOnly={!isEditing}
+										$isEditing={isEditing}
+										placeholder='Описание задачи'
+									/>
+								</S.BrowseFormBlock>
+							</S.PopBrowseForm>
+							<Calendar
+								isEditing={isEditing}
+								selectedDate={new Date(editedCard.date)}
+								onDateSelect={date =>
+									setEditedCard(prev => ({ ...prev, date: date.toISOString() }))
+								}
+							/>
+						</S.PopBrowseWrap>
 
-          <PopBrowseWrap>
-            <PopBrowseForm id="formBrowseCard">
-              <FormBrowseBlock>
-                <FormBrowseLabel htmlFor="textArea01">Описание задачи</FormBrowseLabel>
-                <FormBrowseTextarea
-                  id="textArea01"
-                  name="description"
-                  readOnly={!isEditing}
-                  value={editedTask.description}
-                  onChange={handleInputChange}
-                  placeholder="Введите описание задачи..."
-                />
-              </FormBrowseBlock>
-            </PopBrowseForm>
+						<S.BtnBlock $isVisible={!isEditing}>
+							<S.BtnGroup>
+								<S.Button $variant='secondary' onClick={handleEdit}>
+									Редактировать задачу
+								</S.Button>
+								<ButtonWithLoader
+									$variant='secondary'
+									onClick={handleDelete}
+									loading={isDeleting}
+								>
+									Удалить задачу
+								</ButtonWithLoader>
+							</S.BtnGroup>
+							<S.Button $variant='primary' onClick={onClose}>
+								Закрыть
+							</S.Button>
+						</S.BtnBlock>
 
-            <PopBrowseCalendar>
-              <CalendarTitle>Даты</CalendarTitle>
-              <CalendarBlock>
-                <CalendarNav>
-                  <CalendarMonth>{getCurrentMonthYear()}</CalendarMonth>
-                  <NavActions>
-                    <NavAction>←</NavAction>
-                    <NavAction>→</NavAction>
-                  </NavActions>
-                </CalendarNav>
-                
-                <CalendarContent>
-                  <CalendarDaysNames>
-                    <CalendarDayName>пн</CalendarDayName>
-                    <CalendarDayName>вт</CalendarDayName>
-                    <CalendarDayName>ср</CalendarDayName>
-                    <CalendarDayName>чт</CalendarDayName>
-                    <CalendarDayName>пт</CalendarDayName>
-                    <CalendarDayName className="-weekend-">сб</CalendarDayName>
-                    <CalendarDayName className="-weekend-">вс</CalendarDayName>
-                  </CalendarDaysNames>
-                  
-                  <CalendarCells>
-                    {days.map((day, index) => (
-                      <CalendarCell
-                        key={index}
-                        className={`${day === currentDay ? '_current' : ''} ${day === selectedDay ? '_active-day' : ''} ${!day ? '_empty' : ''} ${isEditing ? '_editable' : ''}`}
-                        onClick={() => handleDateSelect(day)}
-                      >
-                        {day}
-                      </CalendarCell>
-                    ))}
-                  </CalendarCells>
-                </CalendarContent>
-                
-                <CalendarPeriod>
-                  <CalendarText>
-                    Срок исполнения: <DateControl>{selectedDate}</DateControl>
-                  </CalendarText>
-                </CalendarPeriod>
-              </CalendarBlock>
-            </PopBrowseCalendar>
-          </PopBrowseWrap>
-
-          <ThemeDown>
-            <ThemeDownCategories>
-              <CategoriesTitle>Категория</CategoriesTitle>
-              <CategoriesTheme 
-                className={`_orange _active-category ${isEditing ? '_editable' : ''}`}
-                onClick={() => handleCategoryChange('Web Design')}
-              >
-                <p>Web Design</p>
-              </CategoriesTheme>
-              <CategoriesTheme 
-                className={`_green ${editedTask.topic === 'Research' ? '_active-category' : ''} ${isEditing ? '_editable' : ''}`}
-                onClick={() => handleCategoryChange('Research')}
-              >
-                <p>Research</p>
-              </CategoriesTheme>
-              <CategoriesTheme 
-                className={`_purple ${editedTask.topic === 'Copywriting' ? '_active-category' : ''} ${isEditing ? '_editable' : ''}`}
-                onClick={() => handleCategoryChange('Copywriting')}
-              >
-                <p>Copywriting</p>
-              </CategoriesTheme>
-            </ThemeDownCategories>
-          </ThemeDown>
-
-          {!isEditing ? (
-            <PopBrowseBtnBrowse>
-              <BtnGroup>
-                <BtnBrowseEdit onClick={() => setIsEditing(true)}>
-                  Редактировать задачу
-                </BtnBrowseEdit>
-                <BtnBrowseDelete onClick={handleDelete}>
-                  Удалить задачу
-                </BtnBrowseDelete>
-              </BtnGroup>
-              <BtnBrowseClose onClick={onClose}>
-                Закрыть
-              </BtnBrowseClose>
-            </PopBrowseBtnBrowse>
-          ) : (
-            <PopBrowseBtnEdit>
-              <BtnGroup>
-                <BtnEditSave onClick={handleSave}>
-                  Сохранить
-                </BtnEditSave>
-                <BtnEditCancel onClick={() => setIsEditing(false)}>
-                  Отменить
-                </BtnEditCancel>
-                <BtnEditDelete onClick={handleDelete}>
-                  Удалить задачу
-                </BtnEditDelete>
-              </BtnGroup>
-              <BtnBrowseClose onClick={onClose}>
-                Закрыть
-              </BtnBrowseClose>
-            </PopBrowseBtnEdit>
-          )}
-        </PopBrowseContent>
-      </PopBrowseBlock>
-    </PopBrowseContainer>
-  );
+						<S.BtnBlock $isVisible={isEditing}>
+							<S.BtnGroup>
+								<ButtonWithLoader
+									$variant='primary'
+									onClick={handleSave}
+									loading={isSaving}
+								>
+									Сохранить
+								</ButtonWithLoader>
+								<S.Button $variant='secondary' onClick={handleCancel}>
+									Отменить
+								</S.Button>
+								<ButtonWithLoader
+									$variant='secondary'
+									onClick={handleDelete}
+									loading={isDeleting}
+								>
+									Удалить задачу
+								</ButtonWithLoader>
+							</S.BtnGroup>
+							<S.Button $variant='primary' onClick={onClose}>
+								Закрыть
+							</S.Button>
+						</S.BtnBlock>
+					</S.PopBrowseContent>
+				</S.PopBrowseBlock>
+			</S.PopBrowseContainer>
+		</S.PopBrowse>
+	)
 }

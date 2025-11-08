@@ -1,15 +1,7 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
-import { NotFoundContainer, NotFoundTitle, NotFoundText, NotFoundLink } from './NotFoundPage.styled';
+import NotFound from '../components/NotFound/NotFound'
 
-export default function NotFoundPage() {
-  return (
-    <NotFoundContainer>
-      <NotFoundTitle>404</NotFoundTitle>
-      <NotFoundText>Страница не найдена</NotFoundText>
-      <NotFoundLink as={Link} to="/">
-        Вернуться на главную
-      </NotFoundLink>
-    </NotFoundContainer>
-  );
+const NotFoundPage = () => {
+	return <NotFound />
 }
+
+export default NotFoundPage

@@ -1,44 +1,52 @@
-// src/components/Main/Main.jsx
-import React from 'react';
-import { useTasks } from '../../hooks/useTasks';
-import Column from './Column/Column';
-import { COLUMNS } from '../../utils/constants';
-import {
-  MainContainer,
-  KanbanBoard,
-  AddTaskButton,
-  LoadingMessage,
-  ErrorMessage
-} from './Main.styled';
+import { useContext } from 'react'
+import { CardContext } from '../../context/CardContext.js'
+import Column from '../Column/Column'
+import { Scontainer, Smain, SmainBlock, SmainContent } from './Main.styled.jsx'
 
-const Main = ({ onTaskClick }) => {
-  const { 
-    tasks, 
-    loading, 
-    error 
-  } = useTasks();
+export default function Main() {
+	const { cards, error } = useContext(CardContext)
 
-  return (
-    <MainContainer>
-      {error && (
-        <ErrorMessage>
-          Ошибка: {error}
-        </ErrorMessage>
-      )}
+	if (error) {
+		return (
+			<Smain>
+				<Scontainer>
+					<p>Ошибка: {error}</p>
+				</Scontainer>
+			</Smain>
+		)
+	}
 
-      <KanbanBoard>
-        {COLUMNS.map(column => (
-          <Column
-            key={column.id}
-            column={column}
-            tasks={tasks}
-            loading={loading}
-            onTaskClick={onTaskClick}
-          />
-        ))}
-      </KanbanBoard>
-    </MainContainer>
-  );
-};
+	const allStatuses = [
+		'Без статуса',
+		'Нужно сделать',
+		'В работе',
+		'Тестирование',
+		'Готово',
+	]
 
-export default Main;
+	const cardsByStatus = cards?.reduce((acc, card) => {
+		if (!card) return acc
+		const status = card.status || 'Без статуса'
+		if (!acc[status]) acc[status] = []
+		acc[status].push(card)
+		return acc
+	}, {})
+
+	return (
+		<Smain>
+			<Scontainer>
+				<SmainBlock>
+					<SmainContent>
+						{allStatuses.map(status => (
+							<Column
+								key={status}
+								title={status}
+								cards={cardsByStatus[status] || []}
+							/>
+						))}
+					</SmainContent>
+				</SmainBlock>
+			</Scontainer>
+		</Smain>
+	)
+}

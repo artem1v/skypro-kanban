@@ -1,36 +1,32 @@
-import React from 'react';
+import { useContext } from 'react'
+import { ThemeContext } from '../../../context/ThemeContext'
 import {
-  PopUserContainer,
-  PopUserName,
-  PopUserMail,
-  PopUserTheme,
-  PopUserCheckbox,
-  PopUserButton
-} from './PopUser.styled';
+	SPopUserSet,
+	SPopUserSetBtn,
+	SPopUserSetMail,
+	SPopUserSetName,
+	SPopUserSetTheme,
+} from './PopUser.styled'
 
-export default function PopUser({ isOpen, onClose, onOpenExit, user }) {
-  if (!isOpen) return null;
+export default function PopUser({ user }) {
+	const { themeName, toggleTheme } = useContext(ThemeContext)
 
-  const handleExitClick = () => {
-    if (onOpenExit && typeof onOpenExit === 'function') {
-      onOpenExit();
-    }
-    onClose();
-  };
-
-  return (
-    <PopUserContainer>
-      <PopUserName>{user?.name || 'Пользователь'}</PopUserName>
-      <PopUserMail>{user?.email || 'email@example.com'}</PopUserMail>
-      
-      <PopUserTheme>
-        <p>Темная тема</p>
-        <PopUserCheckbox type="checkbox" className="checkbox" name="checkbox" />
-      </PopUserTheme>
-      
-      <PopUserButton onClick={handleExitClick}>
-        Выйти
-      </PopUserButton>
-    </PopUserContainer>
-  );
+	return (
+		<SPopUserSet id='user-set-target'>
+			<SPopUserSetName>{user?.user?.name || 'Имя не указано'}</SPopUserSetName>
+			<SPopUserSetMail>
+				{user?.user?.login || 'Email не указан'}
+			</SPopUserSetMail>
+			<SPopUserSetTheme>
+				<p>Темная тема</p>
+				<input
+					type='checkbox'
+					name='checkbox'
+					onChange={toggleTheme}
+					checked={themeName === 'dark'}
+				/>
+			</SPopUserSetTheme>
+			<SPopUserSetBtn to='/logout'>Выйти</SPopUserSetBtn>
+		</SPopUserSet>
+	)
 }
