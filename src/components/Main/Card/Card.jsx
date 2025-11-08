@@ -17,7 +17,7 @@ const Card = ({ task, onClick }) => {
   };
 
   return (
-    <CardContainer onClick={onClick}>
+    <CardContainer onClick={() => onClick(task)}>
       <CardTitle>{task.title}</CardTitle>
       
       {task.description && (

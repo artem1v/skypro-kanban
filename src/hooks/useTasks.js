@@ -1,7 +1,21 @@
 // src/hooks/useTasks.js
 import { useState, useEffect } from 'react';
-import { fetchCards, postCard, editCard, deleteCard } from '../api/tasks';
+import { fetchCards, postCard, editCard, getCard } from '../api/tasks';
 import { useAuth } from './useAuth';
+
+// Функция для нормализации данных - преобразует _id в id
+const normalizeTasks = (tasks) => {
+  if (!tasks || !Array.isArray(tasks)) return [];
+  
+  return tasks.map(task => ({
+    ...task,
+    id: task._id || task.id, // Используем _id как id если есть
+    // Также нормализуем другие поля если нужно
+    date: task.date || null,
+    topic: task.topic || 'Web Design',
+    status: task.status || 'Без статуса'
+  }));
+};
 
 export const useTasks = () => {
   const [tasks, setTasks] = useState([]);
@@ -9,32 +23,49 @@ export const useTasks = () => {
   const [error, setError] = useState(null);
   const { token } = useAuth();
 
-  const loadTasks = async () => {
-    if (!token) return;
+ // src/hooks/useTasks.js
+// В функции loadTasks после получения данных:
+const loadTasks = async () => {
+  if (!token) return;
+  
+  setLoading(true);
+  setError(null);
+  try {
+    const response = await fetchCards();
+    console.log('Ответ от API (загрузка):', response);
     
-    setLoading(true);
-    setError(null);
-    try {
-      const tasksData = await fetchCards();
-      console.log('Загруженные задачи:', tasksData); // Для отладки
-      setTasks(tasksData);
-    } catch (err) {
-      setError(err.message);
-      console.error('Ошибка загрузки задач:', err);
-    } finally {
-      setLoading(false);
-    }
-  };
+    // Нормализуем данные
+    const tasksData = response.tasks || response;
+    const normalizedTasks = normalizeTasks(tasksData);
+    
+    // ОТЛАДКА: Покажем все уникальные статусы
+    const uniqueStatuses = [...new Set(normalizedTasks.map(task => task.status))];
+    console.log('Уникальные статусы в задачах:', uniqueStatuses);
+    console.log('Все нормализованные задачи:', normalizedTasks);
+    
+    setTasks(normalizedTasks);
+  } catch (err) {
+    setError(err.message);
+    console.error('Ошибка загрузки задач:', err);
+  } finally {
+    setLoading(false);
+  }
+};
 
   const addTask = async (taskData) => {
     try {
-      console.log('Добавление задачи:', taskData); // Для отладки
-      const newTask = await postCard(taskData);
-      console.log('Созданная задача:', newTask); // Для отладки
+      console.log('Добавление задачи:', taskData);
+      const response = await postCard(taskData);
+      console.log('Ответ от API (создание):', response);
       
-      // Обновляем локальное состояние
-      setTasks(prev => [...prev, newTask]);
-      return newTask;
+      // Нормализуем обновленный список задач
+      const updatedTasks = response.tasks || response;
+      const normalizedTasks = normalizeTasks(updatedTasks);
+      
+      console.log('Обновленные нормализованные задачи:', normalizedTasks);
+      setTasks(normalizedTasks);
+      
+      return normalizedTasks;
     } catch (err) {
       setError(err.message);
       console.error('Ошибка создания задачи:', err);
@@ -44,11 +75,10 @@ export const useTasks = () => {
 
   const updateTask = async (taskId, taskData) => {
     try {
-      const updatedTask = await editCard(taskId, taskData);
-      setTasks(prev => prev.map(task => 
-        task.id === taskId ? updatedTask : task
-      ));
-      return updatedTask;
+      const response = await editCard(taskId, taskData);
+      // После обновления перезагружаем все задачи
+      await loadTasks();
+      return response;
     } catch (err) {
       setError(err.message);
       throw err;
@@ -57,8 +87,9 @@ export const useTasks = () => {
 
   const deleteTask = async (taskId) => {
     try {
-      await deleteCard(taskId);
-      setTasks(prev => prev.filter(task => task.id !== taskId));
+      await getCard(taskId);
+      // После удаления перезагружаем все задачи
+      await loadTasks();
     } catch (err) {
       setError(err.message);
       throw err;
