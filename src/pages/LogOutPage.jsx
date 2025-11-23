@@ -1,10 +1,8 @@
+import { LogOut } from 'lucide-react'
 import { useContext } from 'react'
-import LogOut from '../components/LogOut/LogOut'
-import { AuthContext } from '../context/AuthContext'
+import { AuthContext } from '../provider/AuthProvider'
 
-const LogOutPage = () => {
+export const LogOutPage = () => {
 	const { updateUserInfo } = useContext(AuthContext)
 	return <LogOut updateUserInfo={updateUserInfo} />
 }
-
-export default LogOutPage

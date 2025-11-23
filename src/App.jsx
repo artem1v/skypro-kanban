@@ -1,28 +1,18 @@
-import { DndProvider } from 'react-dnd'
-import { HTML5Backend } from 'react-dnd-html5-backend'
-import { ToastContainer } from 'react-toastify'
-import AppRoutes from './components/AppRoutes/AppRoutes'
-import AuthProvider from './context/AuthProvider'
-import { CardProvider } from './context/CardProvider'
+import "./assets/styles/globals.scss";
+import AuthProvider from "./provider/AuthProvider";
+import { ExpenseProvider } from "./provider/ExpenseProvider";
+import AppRoutes from "./routes/AppRoutes";
 
 function App() {
-	return (
-		<AuthProvider>
-			<CardProvider>
-				<DndProvider backend={HTML5Backend}>
-					<AppRoutes />
-					<ToastContainer
-						position='bottom-right'
-						hideProgressBar
-						closeOnClick
-						draggable
-						pauseOnHover
-						toastClassName={() => 'custom-toast'}
-					/>
-				</DndProvider>
-			</CardProvider>
-		</AuthProvider>
-	)
+  return (
+    <div>
+      <AuthProvider>
+        <ExpenseProvider>
+          <AppRoutes />
+        </ExpenseProvider>
+      </AuthProvider>
+    </div>
+  );
 }
 
-export default App
+export default App;
